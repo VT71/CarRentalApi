@@ -1,8 +1,22 @@
+using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var connection = String.Empty;
+if (builder.Environment.IsDevelopment())
+{
+    connection = builder.Configuration["DbConnectionString"];
+}
+else
+{
+    connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+}
+
+builder.Services.AddDbContext<CarRentalContext>(options =>
+    options.UseSqlServer(connection));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

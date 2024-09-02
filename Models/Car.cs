@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace CarRentalApi.Models;
 
 public class Car
@@ -6,6 +8,7 @@ public class Car
     public string? Make { get; set; }
     public string? Model { get; set; }
     public string? Description { get; set; }
+    [Column(TypeName = "decimal(18,2)")]
     public decimal Deposit { get; set; }
     public int Seats { get; set; }
     public int Doors { get; set; }
