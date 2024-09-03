@@ -25,14 +25,14 @@ namespace CarRentalApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
-            return await _context.Cars.ToListAsync();
+            return await _context.Cars.AsNoTracking().ToListAsync();
         }
 
         // GET: api/Car/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Car>> GetCar(long id)
         {
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _context.Cars.AsNoTracking().SingleOrDefaultAsync(c => c.Id == id);
 
             if (car == null)
             {
@@ -81,7 +81,7 @@ namespace CarRentalApi.Controllers
             _context.Cars.Add(car);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCar", new { id = car.Id }, car);
+            return CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
         }
 
         // DELETE: api/Car/5
