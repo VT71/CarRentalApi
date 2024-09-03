@@ -9,5 +9,7 @@ public class CarRentalContext : DbContext
     {
     }
 
-    public DbSet<Car> Cars => Set<Car>();
+    public DbSet<Car> Cars { get; set; }
+    public DbSet<Make> Make { get; set; }
+
 }
