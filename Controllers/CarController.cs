@@ -32,7 +32,7 @@ namespace CarRentalApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Car>> GetCar(long id)
         {
-            var car = await _context.Cars.AsNoTracking().SingleOrDefaultAsync(c => c.Id == id);
+            var car = await _context.Cars.AsNoTracking().Include(car => car.Make).SingleOrDefaultAsync(c => c.Id == id);
 
             if (car == null)
             {
@@ -78,7 +78,14 @@ namespace CarRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Car>> PostCar(Car car)
         {
-            _context.Cars.Add(car);
+            var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == car.MakeId);
+
+            if (make == null) {
+                return BadRequest();
+            }
+
+            make.Cars.Add(car);
+            
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
