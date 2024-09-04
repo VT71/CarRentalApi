@@ -25,7 +25,7 @@ namespace CarRentalApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
-            return await _context.Cars.AsNoTracking().ToListAsync();
+            return await _context.Cars.AsNoTracking().Include(car => car.Make).ToListAsync();
         }
 
         // GET: api/Car/5
