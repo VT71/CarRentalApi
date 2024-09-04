@@ -42,6 +42,21 @@ namespace CarRentalApi.Controllers
             return make;
         }
 
+        [HttpGet("cars/{id}")]
+        public async Task<ActionResult<ICollection<Car>>> GetMakeCars(long id)
+        {
+            var make = await _context.Make.AsNoTracking().Include(make => make.Cars).SingleOrDefaultAsync(make => make.Id == id);
+
+            if (make == null)
+            {
+                return BadRequest();
+            }
+
+            var cars = make.Cars.ToList();
+
+            return cars;
+        }
+
         // PUT: api/Make/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
