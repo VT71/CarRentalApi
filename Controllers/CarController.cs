@@ -47,7 +47,9 @@ namespace CarRentalApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCar(long id, Car car)
         {
-            if (id != car.Id)
+            var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == car.MakeId);
+
+            if (id != car.Id || make == null)
             {
                 return BadRequest();
             }
