@@ -25,14 +25,14 @@ namespace CarRentalApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Make>>> GetMake()
         {
-            return await _context.Make.ToListAsync();
+            return await _context.Make.AsNoTracking().ToListAsync();
         }
 
         // GET: api/Make/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Make>> GetMake(long id)
         {
-            var make = await _context.Make.FindAsync(id);
+            var make = await _context.Make.AsNoTracking().Include(m => m.Cars).SingleOrDefaultAsync(m => m.Id == id);
 
             if (make == null)
             {
@@ -40,21 +40,6 @@ namespace CarRentalApi.Controllers
             }
 
             return make;
-        }
-
-        [HttpGet("cars/{id}")]
-        public async Task<ActionResult<ICollection<Car>>> GetMakeCars(long id)
-        {
-            var make = await _context.Make.AsNoTracking().Include(make => make.Cars).SingleOrDefaultAsync(make => make.Id == id);
-
-            if (make == null)
-            {
-                return BadRequest();
-            }
-
-            var cars = make.Cars.ToList();
-
-            return cars;
         }
 
         // PUT: api/Make/5
