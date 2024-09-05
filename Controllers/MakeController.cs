@@ -43,8 +43,7 @@ namespace CarRentalApi.Controllers
         }
 
         // PUT: api/Make/5
-        [HttpPut]
-        [HttpPut("{id}")]
+        [HttpPut("{id}/updateName")]
         public async Task<ActionResult> UpdateName(long id, string name)
         {
             var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == id);
@@ -67,6 +66,20 @@ namespace CarRentalApi.Controllers
 
             return NoContent();
         }
+
+        // POST: api/Make
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Make>> PostMake(Make make)
+        {
+            _context.Make.Add(make);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetMake", new { id = make.Id }, make);
+        }
+
+
+        // Temporarily Unavailable Actions
 
         // PUT: api/Make/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -98,17 +111,6 @@ namespace CarRentalApi.Controllers
 
         //     return NoContent();
         // }
-
-        // POST: api/Make
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Make>> PostMake(Make make)
-        {
-            _context.Make.Add(make);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMake", new { id = make.Id }, make);
-        }
 
         // DELETE: api/Make/5
         // [HttpDelete("{id}")]
