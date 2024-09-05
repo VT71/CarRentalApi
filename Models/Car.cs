@@ -18,10 +18,5 @@ public class Car
     public required string TransmissionType { get; set; }
     public int PowerHp { get; set; }
     public int RangeKm { get; set; }
-    public AvailabilityStatus AvailabilityStatus { get; set; }
-}
-
-public enum AvailabilityStatus
-{
-    Available, Maintenance
+    public bool Available { get; set; }
 }

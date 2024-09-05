@@ -82,12 +82,13 @@ namespace CarRentalApi.Controllers
         {
             var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == car.MakeId);
 
-            if (make == null) {
+            if (make == null)
+            {
                 return BadRequest();
             }
 
             make.Cars.Add(car);
-            
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
