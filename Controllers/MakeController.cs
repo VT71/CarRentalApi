@@ -43,16 +43,18 @@ namespace CarRentalApi.Controllers
         }
 
         // PUT: api/Make/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMake(long id, Make make)
+        public async Task<ActionResult> UpdateName(long id, string name)
         {
-            if (id != make.Id)
+            var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == id);
+
+            if (make == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(make).State = EntityState.Modified;
+            make.Name = name;
 
             try
             {
@@ -60,18 +62,42 @@ namespace CarRentalApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MakeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict();
             }
 
             return NoContent();
         }
+
+        // PUT: api/Make/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // [HttpPut("{id}")]
+        // public async Task<IActionResult> PutMake(long id, Make make)
+        // {
+        //     if (id != make.Id)
+        //     {
+        //         return BadRequest();
+        //     }
+
+        //     _context.Entry(make).State = EntityState.Modified;
+
+        //     try
+        //     {
+        //         await _context.SaveChangesAsync();
+        //     }
+        //     catch (DbUpdateConcurrencyException)
+        //     {
+        //         if (!MakeExists(id))
+        //         {
+        //             return NotFound();
+        //         }
+        //         else
+        //         {
+        //             throw;
+        //         }
+        //     }
+
+        //     return NoContent();
+        // }
 
         // POST: api/Make
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -85,20 +111,20 @@ namespace CarRentalApi.Controllers
         }
 
         // DELETE: api/Make/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMake(long id)
-        {
-            var make = await _context.Make.FindAsync(id);
-            if (make == null)
-            {
-                return NotFound();
-            }
+        // [HttpDelete("{id}")]
+        // public async Task<IActionResult> DeleteMake(long id)
+        // {
+        //     var make = await _context.Make.FindAsync(id);
+        //     if (make == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-            _context.Make.Remove(make);
-            await _context.SaveChangesAsync();
+        //     _context.Make.Remove(make);
+        //     await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //     return NoContent();
+        // }
 
         private bool MakeExists(long id)
         {
