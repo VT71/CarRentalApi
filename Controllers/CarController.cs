@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentalApi.Controllers
 {
@@ -23,6 +24,7 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Car
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
             return await _context.Cars.AsNoTracking().Include(car => car.Make).ToListAsync();

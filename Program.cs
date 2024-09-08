@@ -1,10 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.Authority = domain;
+    options.Audience = builder.Configuration["Auth0:Audience"];
+});
 
 // var connection = String.Empty;
 // if (builder.Environment.IsDevelopment())
@@ -28,7 +39,33 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+      {
+          c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProject", Version = "v1.0.0" });
+
+          //👇 new code
+          var securitySchema = new OpenApiSecurityScheme
+          {
+              Description = "Using the Authorization header with the Bearer scheme.",
+              Name = "Authorization",
+              In = ParameterLocation.Header,
+              Type = SecuritySchemeType.Http,
+              Scheme = "bearer",
+              Reference = new OpenApiReference
+              {
+                  Type = ReferenceType.SecurityScheme,
+                  Id = "Bearer"
+              }
+          };
+
+          c.AddSecurityDefinition("Bearer", securitySchema);
+
+          c.AddSecurityRequirement(new OpenApiSecurityRequirement
+          {
+              { securitySchema, new[] { "Bearer" } }
+          });
+          //👆 new code
+      });
 
 var app = builder.Build();
 
@@ -41,6 +78,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
