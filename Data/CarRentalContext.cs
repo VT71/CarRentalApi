@@ -11,15 +11,17 @@ public class CarRentalContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+
         modelBuilder.Entity<Booking>()
             .HasOne(b => b.PickUpLocation)
-            .WithMany(l => l.Bookings)
+            .WithMany(l => l.PickUpBookings)
             .HasForeignKey(b => b.PickUpLocationId)
             .IsRequired();
 
         modelBuilder.Entity<Booking>()
             .HasOne(b => b.DropOffLocation)
-            .WithMany(l => l.Bookings)
+            .WithMany(l => l.DropOffBookings)
             .HasForeignKey(b => b.DropOffLocationId)
             .IsRequired();
     }
