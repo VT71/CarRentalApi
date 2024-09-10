@@ -9,7 +9,24 @@ public class CarRentalContext : DbContext
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.PickUpLocation)
+            .WithMany(l => l.Bookings)
+            .HasForeignKey(b => b.PickUpLocationId)
+            .IsRequired();
+
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.DropOffLocation)
+            .WithMany(l => l.Bookings)
+            .HasForeignKey(b => b.DropOffLocationId)
+            .IsRequired();
+    }
+
     public DbSet<Car> Cars { get; set; }
-    public DbSet<Make> Make { get; set; }
+    public DbSet<Make> Makes { get; set; }
+    public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Location> Locations { get; set; }
 
 }

@@ -58,7 +58,7 @@ namespace CarRentalApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCar(long id, Car car)
         {
-            var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == car.MakeId);
+            var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == car.MakeId);
 
             if (id != car.Id || make == null)
             {
@@ -91,7 +91,7 @@ namespace CarRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Car>> PostCar(Car car)
         {
-            var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == car.MakeId);
+            var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == car.MakeId);
 
             if (make == null)
             {

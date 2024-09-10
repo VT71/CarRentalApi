@@ -18,4 +18,5 @@ public class Car
     public int PowerHp { get; set; }
     public int RangeKm { get; set; }
     public bool Available { get; set; }
+    public ICollection<Booking> Bookings { get; } = new List<Booking>();
 }

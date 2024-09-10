@@ -25,14 +25,14 @@ namespace CarRentalApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Make>>> GetMake()
         {
-            return await _context.Make.AsNoTracking().ToListAsync();
+            return await _context.Makes.AsNoTracking().ToListAsync();
         }
 
         // GET: api/Make/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Make>> GetMake(long id)
         {
-            var make = await _context.Make.AsNoTracking().Include(m => m.Cars).SingleOrDefaultAsync(m => m.Id == id);
+            var make = await _context.Makes.AsNoTracking().Include(m => m.Cars).SingleOrDefaultAsync(m => m.Id == id);
 
             if (make == null)
             {
@@ -46,7 +46,7 @@ namespace CarRentalApi.Controllers
         [HttpPut("{id}/updateName")]
         public async Task<ActionResult> UpdateName(long id, string name)
         {
-            var make = await _context.Make.SingleOrDefaultAsync(m => m.Id == id);
+            var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == id);
 
             if (make == null)
             {
@@ -72,7 +72,7 @@ namespace CarRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Make>> PostMake(Make make)
         {
-            _context.Make.Add(make);
+            _context.Makes.Add(make);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMake", new { id = make.Id }, make);
@@ -116,13 +116,13 @@ namespace CarRentalApi.Controllers
         // [HttpDelete("{id}")]
         // public async Task<IActionResult> DeleteMake(long id)
         // {
-        //     var make = await _context.Make.FindAsync(id);
+        //     var make = await _context.Makes.FindAsync(id);
         //     if (make == null)
         //     {
         //         return NotFound();
         //     }
 
-        //     _context.Make.Remove(make);
+        //     _context.Makes.Remove(make);
         //     await _context.SaveChangesAsync();
 
         //     return NoContent();
@@ -130,7 +130,7 @@ namespace CarRentalApi.Controllers
 
         private bool MakeExists(long id)
         {
-            return _context.Make.Any(e => e.Id == id);
+            return _context.Makes.Any(e => e.Id == id);
         }
     }
 }
