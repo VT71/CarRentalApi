@@ -4,9 +4,20 @@ using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
+var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: DevelopmentCorsPolicy,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:4200").WithMethods("POST", "PUT", "DELETE", "GET").AllowAnyHeader();
+                      });
+});
 
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 
@@ -43,7 +54,8 @@ builder.Services.AddSwaggerGen(c =>
       {
           c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProject", Version = "v1.0.0" });
 
-          //👇 new code
+          string securityDefinitionName = "Bearer";
+
           var securitySchema = new OpenApiSecurityScheme
           {
               Description = "Using the Authorization header with the Bearer scheme.",
@@ -58,14 +70,17 @@ builder.Services.AddSwaggerGen(c =>
               }
           };
 
-          c.AddSecurityDefinition("Bearer", securitySchema);
-
-          c.AddSecurityRequirement(new OpenApiSecurityRequirement
+          OpenApiSecurityRequirement securityRequirement = new OpenApiSecurityRequirement
           {
               { securitySchema, new[] { "Bearer" } }
-          });
-          //👆 new code
+          };
+
+          c.AddSecurityDefinition(securityDefinitionName, securitySchema);
+
+          c.AddSecurityRequirement(securityRequirement);
       });
+
+
 
 var app = builder.Build();
 
@@ -74,8 +89,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(DevelopmentCorsPolicy);
 }
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

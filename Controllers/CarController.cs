@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 using CarRentalApi.Data;
 using CarRentalApi.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentalApi.Controllers
 {
@@ -27,6 +29,13 @@ namespace CarRentalApi.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
+            // var audience = User.Claims;
+            // foreach (var i in audience)
+            // {
+            //     Console.WriteLine(i);
+            // }
+            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // Console.WriteLine("User ID: " + userId);
             return await _context.Cars.AsNoTracking().Include(car => car.Make).ToListAsync();
         }
 
