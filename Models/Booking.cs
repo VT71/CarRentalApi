@@ -6,6 +6,7 @@ namespace CarRentalApi.Models;
 public class Booking
 {
     public long Id { get; set; }
+    public required string UserId {get; set; }
     public DateTimeOffset PickUpDateTime { get; set; }
     public DateTimeOffset DropOffDateTime { get; set; }
     public long CarId { get; set; }
