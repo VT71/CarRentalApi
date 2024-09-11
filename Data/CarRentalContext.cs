@@ -17,13 +17,13 @@ public class CarRentalContext : DbContext
             .HasOne(b => b.PickUpLocation)
             .WithMany(l => l.PickUpBookings)
             .HasForeignKey(b => b.PickUpLocationId)
-            .IsRequired();
+            .IsRequired().OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Booking>()
             .HasOne(b => b.DropOffLocation)
             .WithMany(l => l.DropOffBookings)
             .HasForeignKey(b => b.DropOffLocationId)
-            .IsRequired();
+            .IsRequired().OnDelete(DeleteBehavior.Restrict);
     }
 
     public DbSet<Car> Cars { get; set; }
