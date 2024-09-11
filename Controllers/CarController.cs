@@ -26,7 +26,6 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Car
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
             // var audience = User.Claims;
