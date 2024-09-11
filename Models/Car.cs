@@ -14,9 +14,14 @@ public class Car
     public decimal Deposit { get; set; }
     public int Seats { get; set; }
     public int Doors { get; set; }
-    public required string TransmissionType { get; set; }
+    public required TransmissionType TransmissionType { get; set; }
     public int PowerHp { get; set; }
     public int RangeKm { get; set; }
     public bool Available { get; set; }
     public ICollection<Booking> Bookings { get; } = new List<Booking>();
+}
+
+public enum TransmissionType
+{
+    auto = 0, manual = 1
 }
