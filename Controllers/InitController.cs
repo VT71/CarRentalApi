@@ -24,9 +24,11 @@ namespace CareRentalApi.Controllers
 
             var make1 = new Make { Name = "Jeep" };
             var make2 = new Make { Name = "Toyota" };
+            var make3 = new Make { Name = "Audi" };
 
             await _context.Makes.AddAsync(make1);
             await _context.Makes.AddAsync(make2);
+            await _context.Makes.AddAsync(make3);
 
             var car1 = new Car
             {

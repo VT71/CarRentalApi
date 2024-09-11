@@ -83,50 +83,50 @@ namespace CarRentalApi.Controllers
 
         // PUT: api/Make/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutMake(long id, Make make)
-        // {
-        //     if (id != make.Id)
-        //     {
-        //         return BadRequest();
-        //     }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutMake(long id, Make make)
+        {
+            if (id != make.Id)
+            {
+                return BadRequest();
+            }
 
-        //     _context.Entry(make).State = EntityState.Modified;
+            _context.Entry(make).State = EntityState.Modified;
 
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //     }
-        //     catch (DbUpdateConcurrencyException)
-        //     {
-        //         if (!MakeExists(id))
-        //         {
-        //             return NotFound();
-        //         }
-        //         else
-        //         {
-        //             throw;
-        //         }
-        //     }
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MakeExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-        //     return NoContent();
-        // }
+            return NoContent();
+        }
 
         // DELETE: api/Make/5
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteMake(long id)
-        // {
-        //     var make = await _context.Makes.FindAsync(id);
-        //     if (make == null)
-        //     {
-        //         return NotFound();
-        //     }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMake(long id)
+        {
+            var make = await _context.Makes.FindAsync(id);
+            if (make == null)
+            {
+                return NotFound();
+            }
 
-        //     _context.Makes.Remove(make);
-        //     await _context.SaveChangesAsync();
+            _context.Makes.Remove(make);
+            await _context.SaveChangesAsync();
 
-        //     return NoContent();
-        // }
+            return NoContent();
+        }
 
         private bool MakeExists(long id)
         {
