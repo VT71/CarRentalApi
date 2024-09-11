@@ -37,7 +37,7 @@ namespace CareRentalApi.Controllers
                 Deposit = 250m,
                 Seats = 5,
                 Doors = 4,
-                TransmissionType = "auto",
+                TransmissionType = TransmissionType.auto,
 
                 PowerHp = 280,
                 RangeKm = 650,
@@ -53,7 +53,7 @@ namespace CareRentalApi.Controllers
                 Deposit = 250m,
                 Seats = 5,
                 Doors = 4,
-                TransmissionType = "auto",
+                TransmissionType = TransmissionType.auto,
 
                 PowerHp = 320,
                 RangeKm = 600,
@@ -62,6 +62,23 @@ namespace CareRentalApi.Controllers
 
             await _context.Cars.AddAsync(car1);
             await _context.Cars.AddAsync(car2);
+
+            var location1 = new Location
+            {
+                Name = "Central London Office",
+                PickUpAvailable = true,
+                DropOffAvailable = true
+            };
+
+            var location2 = new Location
+            {
+                Name = "Heathrow Airport",
+                PickUpAvailable = true,
+                DropOffAvailable = true
+            };
+
+            await _context.Locations.AddAsync(location1);
+            await _context.Locations.AddAsync(location2);
 
             await _context.SaveChangesAsync();
 
