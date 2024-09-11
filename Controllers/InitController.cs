@@ -82,6 +82,8 @@ namespace CareRentalApi.Controllers
             await _context.Locations.AddAsync(location1);
             await _context.Locations.AddAsync(location2);
 
+            // TEST RESTRICTED DELETE BEHAVIOR. NOT WORKING FOR SOME REASON
+
             await _context.SaveChangesAsync();
 
             return Ok();
