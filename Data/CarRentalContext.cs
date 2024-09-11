@@ -11,7 +11,19 @@ public class CarRentalContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Car>().HasOne(c => c.Make).WithMany(m => m.Cars).HasForeignKey(c => c.MakeIf).OnDelete(DeleteBehavior.Restrict).IsRequired();
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Car)
+            .WithMany(c => c.Bookings)
+            .HasForeignKey(b => b.CarId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
+
+        modelBuilder.Entity<Car>()
+            .HasOne(c => c.Make)
+            .WithMany(m => m.Cars)
+            .HasForeignKey(c => c.MakeId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
 
         modelBuilder.Entity<Booking>()
             .HasOne(b => b.PickUpLocation)
