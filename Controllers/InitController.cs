@@ -39,7 +39,7 @@ namespace CareRentalApi.Controllers
                 Deposit = 250m,
                 Seats = 5,
                 Doors = 4,
-                TransmissionType = TransmissionType.auto,
+                TransmissionType = TransmissionType.Auto,
 
                 PowerHp = 280,
                 RangeKm = 650,
@@ -55,7 +55,7 @@ namespace CareRentalApi.Controllers
                 Deposit = 250m,
                 Seats = 5,
                 Doors = 4,
-                TransmissionType = TransmissionType.auto,
+                TransmissionType = TransmissionType.Auto,
 
                 PowerHp = 320,
                 RangeKm = 600,

@@ -23,5 +23,5 @@ public class Car
 
 public enum TransmissionType
 {
-    auto = 0, manual = 1
+    Auto = 0, Manual = 1
 }
