@@ -12,4 +12,12 @@ public class Booking
     public required Location PickUpLocation { get; set; }
     public long DropOffLocationId { get; set; }
     public required Location DropOffLocation { get; set; }
+    public required Status Status {get; set;}
+}
+
+public enum Status
+{
+    Pending = 0,
+    Confirmed = 1,
+    Cancelled = 2,
 }
