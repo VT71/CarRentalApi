@@ -82,6 +82,22 @@ namespace CareRentalApi.Controllers
             await _context.Locations.AddAsync(location1);
             await _context.Locations.AddAsync(location2);
 
+            var booking1 = new Booking
+            {
+                UserId = "1",
+                CarId = car1.Id,
+                Car = car1,
+                PickUpDateTime = DateTimeOffset.Parse("2024-09-22T12:53:56.968+00:00"),
+                DropOffDateTime = DateTimeOffset.Parse("2024-09-28T12:53:56.968+00:00"),
+                PickUpLocationId = location1.Id,
+                PickUpLocation = location1,
+                DropOffLocationId = location1.Id,
+                DropOffLocation = location1,
+                Status = Status.Confirmed
+            };
+
+            await _context.Bookings.AddAsync(booking1);
+
             // TEST RESTRICTED DELETE BEHAVIOR. NOT WORKING IN-MEMORY DB
 
             await _context.SaveChangesAsync();
