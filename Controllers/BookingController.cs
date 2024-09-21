@@ -85,19 +85,19 @@ namespace CareRentalApi.Controllers
             }
             else
             {
-                return BadRequest("Invalid Car");
+                ModelState.AddModelError(nameof(Booking.Car), "Invalid Car");
             }
 
 
             var nowTime = DateTimeOffset.UtcNow;
             if (DateTimeOffset.Compare(booking.PickUpDateTime, nowTime) <= 0)
             {
-                return BadRequest("Invalid Pick Up Date");
+                ModelState.AddModelError(nameof(Booking.PickUpDateTime), "Invalid Pick Up Date");
             }
 
             if (DateTimeOffset.Compare(booking.DropOffDateTime, booking.PickUpDateTime) <= 0)
             {
-                return BadRequest("Invalid Drop Off Date");
+                ModelState.AddModelError(nameof(Booking.DropOffDateTime), "Invalid Drop Off Date");
             }
 
             var pickUpLocation = await _context.Locations.FindAsync(booking.PickUpLocationId);
@@ -108,7 +108,7 @@ namespace CareRentalApi.Controllers
             }
             else
             {
-                return BadRequest("Invalid Pick Up Location");
+                ModelState.AddModelError(nameof(Booking.PickUpLocation), "Invalid Pick Up Location");
             }
 
             var dropOffLocation = await _context.Locations.FindAsync(booking.DropOffLocationId);
@@ -118,7 +118,7 @@ namespace CareRentalApi.Controllers
             }
             else
             {
-                return BadRequest("Invalid Drop Off Location");
+                ModelState.AddModelError(nameof(Booking.DropOffLocation), "Invalid Drop Off Location");
             }
 
             if (!ValidStatus(booking.Status))
