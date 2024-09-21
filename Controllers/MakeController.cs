@@ -75,7 +75,7 @@ namespace CarRentalApi.Controllers
             _context.Makes.Add(make);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMake", new { id = make.Id }, make);
+            return CreatedAtAction(nameof(GetMake), new { id = make.Id }, make);
         }
 
 

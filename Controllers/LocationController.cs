@@ -81,7 +81,7 @@ namespace CareRentalApi.Controllers
             _context.Locations.Add(location);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetLocation", new { id = location.Id }, location);
+            return CreatedAtAction(nameof(GetLocation), new { id = location.Id }, location);
         }
 
         // DELETE: api/Location/5
