@@ -79,7 +79,7 @@ namespace CareRentalApi.Controllers
         public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
             var car = await _context.Cars.FindAsync(booking.CarId);
-            if (car != null && car.Available == true)
+            if (car != null && car.Available == true && !BookingOverlap(booking))
             {
                 booking.Car = car;
             }
@@ -165,6 +165,11 @@ namespace CareRentalApi.Controllers
                 return true;
             }
             return false;
+        }
+
+        private bool BookingOverlap(Booking newBooking)
+        {
+            return _context.Bookings.Any(b => b.CarId == newBooking.CarId && DateTimeOffset.Compare(newBooking.PickUpDateTime, b.DropOffDateTime) < 0 && DateTimeOffset.Compare(newBooking.DropOffDateTime, b.PickUpDateTime) > 0);
         }
     }
 }
