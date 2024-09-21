@@ -17,7 +17,7 @@ public class Booking
 
 public enum Status
 {
-    Pending = 0,
-    Confirmed = 1,
-    Cancelled = 2,
+    Pending,
+    Confirmed,
+    Cancelled,
 }

@@ -78,6 +78,59 @@ namespace CareRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
+            var car = await _context.Cars.FindAsync(booking.CarId);
+            if (car != null && car.Available == true)
+            {
+                booking.Car = car;
+            }
+            else
+            {
+                return BadRequest("Invalid Car");
+            }
+
+
+            var nowTime = DateTimeOffset.UtcNow;
+            if (DateTimeOffset.Compare(booking.PickUpDateTime, nowTime) <= 0)
+            {
+                return BadRequest("Invalid Pick Up Date");
+            }
+
+            if (DateTimeOffset.Compare(booking.DropOffDateTime, booking.PickUpDateTime) <= 0)
+            {
+                return BadRequest("Invalid Drop Off Date");
+            }
+
+            var pickUpLocation = await _context.Locations.FindAsync(booking.PickUpLocationId);
+            if (pickUpLocation != null && pickUpLocation.PickUpAvailable == true)
+            {
+                booking.PickUpLocation = pickUpLocation;
+
+            }
+            else
+            {
+                return BadRequest("Invalid Pick Up Location");
+            }
+
+            var dropOffLocation = await _context.Locations.FindAsync(booking.DropOffLocationId);
+            if (dropOffLocation != null && dropOffLocation.DropOffAvailable == true)
+            {
+                booking.DropOffLocation = dropOffLocation;
+            }
+            else
+            {
+                return BadRequest("Invalid Drop Off Location");
+            }
+
+            if (!ValidStatus(booking.Status))
+            {
+                ModelState.AddModelError(nameof(Booking.Status), "Invalid Status");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
 
@@ -103,6 +156,15 @@ namespace CareRentalApi.Controllers
         private bool BookingExists(long id)
         {
             return _context.Bookings.Any(e => e.Id == id);
+        }
+
+        private bool ValidStatus(object? value)
+        {
+            if (value != null && Enum.IsDefined(typeof(Status), value))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
