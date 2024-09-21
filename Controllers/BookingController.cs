@@ -121,10 +121,11 @@ namespace CareRentalApi.Controllers
                 ModelState.AddModelError(nameof(Booking.DropOffLocation), "Invalid Drop Off Location");
             }
 
-            if (!ValidStatus(booking.Status))
-            {
-                ModelState.AddModelError(nameof(Booking.Status), "Invalid Status");
-            }
+            // if (!ValidStatus(booking.Status))
+            // {
+            //     ModelState.AddModelError(nameof(Booking.Status), "Invalid Status");
+            // }
+            booking.Status = Status.Pending;
 
             if (!ModelState.IsValid)
             {
