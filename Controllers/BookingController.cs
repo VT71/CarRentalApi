@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
+using CarRentalApi.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CareRentalApi.Controllers
 {
@@ -15,10 +17,12 @@ namespace CareRentalApi.Controllers
     public class BookingController : ControllerBase
     {
         private readonly CarRentalContext _context;
+        private readonly BookingService _service;
 
-        public BookingController(CarRentalContext context)
+        public BookingController(CarRentalContext context, BookingService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: api/Booking
@@ -78,64 +82,14 @@ namespace CareRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
-            var car = await _context.Cars.FindAsync(booking.CarId);
-            if (car != null && car.Available == true && !BookingOverlap(booking))
+            Booking? newBooking = await _service.CreateBooking(booking);
+
+            if (newBooking == null)
             {
-                booking.Car = car;
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(Booking.Car), "Invalid Car");
+                return BadRequest();
             }
 
-
-            var nowTime = DateTimeOffset.UtcNow;
-            if (DateTimeOffset.Compare(booking.PickUpDateTime, nowTime) <= 0)
-            {
-                ModelState.AddModelError(nameof(Booking.PickUpDateTime), "Invalid Pick Up Date");
-            }
-
-            if (DateTimeOffset.Compare(booking.DropOffDateTime, booking.PickUpDateTime) <= 0)
-            {
-                ModelState.AddModelError(nameof(Booking.DropOffDateTime), "Invalid Drop Off Date");
-            }
-
-            var pickUpLocation = await _context.Locations.FindAsync(booking.PickUpLocationId);
-            if (pickUpLocation != null && pickUpLocation.PickUpAvailable == true)
-            {
-                booking.PickUpLocation = pickUpLocation;
-
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(Booking.PickUpLocation), "Invalid Pick Up Location");
-            }
-
-            var dropOffLocation = await _context.Locations.FindAsync(booking.DropOffLocationId);
-            if (dropOffLocation != null && dropOffLocation.DropOffAvailable == true)
-            {
-                booking.DropOffLocation = dropOffLocation;
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(Booking.DropOffLocation), "Invalid Drop Off Location");
-            }
-
-            // if (!ValidStatus(booking.Status))
-            // {
-            //     ModelState.AddModelError(nameof(Booking.Status), "Invalid Status");
-            // }
-            booking.Status = Status.Pending;
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Bookings.Add(booking);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetBooking), new { id = booking.Id }, booking);
+            return CreatedAtAction(nameof(GetBooking), new { id = newBooking.Id }, newBooking);
         }
 
         // DELETE: api/Booking/5
