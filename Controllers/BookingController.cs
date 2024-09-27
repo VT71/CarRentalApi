@@ -29,7 +29,7 @@ namespace CareRentalApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Booking>> GetBookings()
         {
-            return await _service.GetBookings();
+            return await _service.GetAll();
         }
 
         // GET: api/Booking/5
@@ -82,7 +82,7 @@ namespace CareRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
-            Booking? newBooking = await _service.CreateBooking(booking);
+            Booking? newBooking = await _service.Create(booking);
 
             if (newBooking == null)
             {
