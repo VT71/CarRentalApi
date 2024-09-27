@@ -13,6 +13,11 @@ public class BookingService
         _context = context;
     }
 
+    public async Task<IEnumerable<Booking>> GetBookings()
+    {
+        return await _context.Bookings.AsNoTracking().ToListAsync(); ;
+    }
+
     public async Task<Booking?> CreateBooking(Booking newBooking)
     {
         Booking? validatedBooking = ValidateBooking(newBooking);

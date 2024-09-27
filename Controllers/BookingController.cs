@@ -27,9 +27,9 @@ namespace CareRentalApi.Controllers
 
         // GET: api/Booking
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+        public async Task<IEnumerable<Booking>> GetBookings()
         {
-            return await _context.Bookings.ToListAsync();
+            return await _service.GetBookings();
         }
 
         // GET: api/Booking/5
