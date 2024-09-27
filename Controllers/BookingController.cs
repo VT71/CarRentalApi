@@ -56,22 +56,11 @@ namespace CareRentalApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(booking).State = EntityState.Modified;
+            bool bookingModified = await _service.Update(id, booking);
 
-            try
+            if (!bookingModified)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookingExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
@@ -106,25 +95,6 @@ namespace CareRentalApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool BookingExists(long id)
-        {
-            return _context.Bookings.Any(e => e.Id == id);
-        }
-
-        private bool ValidStatus(object? value)
-        {
-            if (value != null && Enum.IsDefined(typeof(Status), value))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool BookingOverlap(Booking newBooking)
-        {
-            return _context.Bookings.Any(b => b.CarId == newBooking.CarId && DateTimeOffset.Compare(newBooking.PickUpDateTime, b.DropOffDateTime) < 0 && DateTimeOffset.Compare(newBooking.DropOffDateTime, b.PickUpDateTime) > 0);
         }
     }
 }

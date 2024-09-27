@@ -37,6 +37,29 @@ public class BookingService
         return await _context.Bookings.FindAsync(id);
     }
 
+    public async Task<bool> Update(long id, Booking booking)
+    {
+        _context.Entry(booking).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!BookingExists(id))
+            {
+                return false;
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return true;
+    }
+
     private Booking? ValidateBooking(Booking booking)
     {
         var car = _context.Cars.Find(booking.CarId);
@@ -99,6 +122,11 @@ public class BookingService
     private bool BookingOverlap(Booking newBooking)
     {
         return _context.Bookings.Any(b => b.CarId == newBooking.CarId && DateTimeOffset.Compare(newBooking.PickUpDateTime, b.DropOffDateTime) < 0 && DateTimeOffset.Compare(newBooking.DropOffDateTime, b.PickUpDateTime) > 0);
+    }
+
+    private bool BookingExists(long id)
+    {
+        return _context.Bookings.Any(e => e.Id == id);
     }
 
 }
