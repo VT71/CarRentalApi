@@ -36,7 +36,6 @@ public class BookingService
         }
         else
         {
-            Console.WriteLine("Car issue or booking overlap");
             return null;
         }
 
