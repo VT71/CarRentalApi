@@ -36,7 +36,7 @@ namespace CareRentalApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetBooking(long id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _service.GetById(id);
 
             if (booking == null)
             {

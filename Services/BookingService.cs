@@ -32,6 +32,11 @@ public class BookingService
         return null;
     }
 
+    public async Task<Booking?> GetById(long id)
+    {
+        return await _context.Bookings.FindAsync(id);
+    }
+
     private Booking? ValidateBooking(Booking booking)
     {
         var car = _context.Cars.Find(booking.CarId);
