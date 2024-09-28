@@ -12,6 +12,8 @@ public class Car
     public required string Description { get; set; }
     public required string PictureUrl { get; set; }
     [Column(TypeName = "decimal(18, 2)")]
+    public decimal DayPrice { get; set; }
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal Deposit { get; set; }
     public int Seats { get; set; }
     public int Doors { get; set; }
