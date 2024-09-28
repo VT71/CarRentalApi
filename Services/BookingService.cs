@@ -60,6 +60,16 @@ public class BookingService
         return true;
     }
 
+    public async Task DeleteById(long id)
+    {
+        var bookingToDelete = await _context.Bookings.FindAsync(id);
+        if (bookingToDelete != null)
+        {
+            _context.Bookings.Remove(bookingToDelete);
+            await _context.SaveChangesAsync();
+        }
+    }
+
     private Booking? ValidateBooking(Booking booking)
     {
         var car = _context.Cars.Find(booking.CarId);

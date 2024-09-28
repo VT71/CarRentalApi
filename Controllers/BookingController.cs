@@ -16,12 +16,10 @@ namespace CareRentalApi.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly CarRentalContext _context;
         private readonly BookingService _service;
 
         public BookingController(CarRentalContext context, BookingService service)
         {
-            _context = context;
             _service = service;
         }
 
@@ -85,14 +83,7 @@ namespace CareRentalApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(long id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking == null)
-            {
-                return NotFound();
-            }
-
-            _context.Bookings.Remove(booking);
-            await _context.SaveChangesAsync();
+            await _service.DeleteById(id);
 
             return NoContent();
         }
