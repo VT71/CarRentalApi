@@ -24,7 +24,7 @@ namespace CareRentalApi.Controllers
 
             var make1 = new Make { Name = "Jeep" };
             var make2 = new Make { Name = "Toyota" };
-            var make3 = new Make { Name = "Audi" };
+            var make3 = new Make { Name = "Volvo" };
 
             await _context.Makes.AddAsync(make1);
             await _context.Makes.AddAsync(make2);
@@ -66,8 +66,27 @@ namespace CareRentalApi.Controllers
                 Available = true,
             };
 
+            var car3 = new Car
+            {
+                MakeId = make3.Id,
+                Make = make3,
+                Model = "XC60",
+                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                PictureUrl = "https://drive.google.com/thumbnail?id=18_jWUCVU6YMBDG40o3Zkb3JlBnNRyTm7",
+                DayPrice = 80m,
+                Deposit = 250m,
+                Seats = 5,
+                Doors = 4,
+                TransmissionType = TransmissionType.Auto,
+
+                PowerHp = 180,
+                RangeKm = 650,
+                Available = true,
+            };
+
             await _context.Cars.AddAsync(car1);
             await _context.Cars.AddAsync(car2);
+            await _context.Cars.AddAsync(car3);
 
             var location1 = new Location
             {
