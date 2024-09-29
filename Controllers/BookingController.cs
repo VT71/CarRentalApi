@@ -83,7 +83,14 @@ namespace CareRentalApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(long id)
         {
-            await _service.DeleteById(id);
+            var booking = await _service.GetById(id);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            await _service.Delete(booking);
 
             return NoContent();
         }
