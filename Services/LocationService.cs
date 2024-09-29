@@ -29,4 +29,37 @@ public class LocationService
     {
         return await _context.Locations.AsNoTracking().Where(l => l.PickUpAvailable == true).ToListAsync();
     }
+
+    public async Task<Location?> GetById(long id)
+    {
+        return await _context.Locations.FindAsync(id);
+    }
+
+    public async Task<bool> Update(long id, Location location)
+    {
+        _context.Entry(location).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!LocationExists(id))
+            {
+                return false;
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return true;
+    }
+
+    private bool LocationExists(long id)
+    {
+        return _context.Locations.Any(e => e.Id == id);
+    }
 }

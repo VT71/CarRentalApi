@@ -47,7 +47,7 @@ namespace CareRentalApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(long id)
         {
-            var location = await _context.Locations.FindAsync(id);
+            var location = await _service.GetById(id);
 
             if (location == null)
             {
@@ -67,25 +67,15 @@ namespace CareRentalApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(location).State = EntityState.Modified;
+            bool locationUpdated = await _service.Update(id, location);
 
-            try
+            if (locationUpdated)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LocationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
+
         }
 
         // POST: api/Location
@@ -113,11 +103,6 @@ namespace CareRentalApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool LocationExists(long id)
-        {
-            return _context.Locations.Any(e => e.Id == id);
         }
     }
 }
