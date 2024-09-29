@@ -31,6 +31,18 @@ namespace CareRentalApi.Controllers
             return await _service.GetAll();
         }
 
+        //Get: api/Location/PickUp
+        public async Task<IEnumerable<Location>> GetPickUpLocations()
+        {
+            return await _service.GetAllPickUp();
+        }
+
+        //Get: api/Location/DropOff
+        public async Task<IEnumerable<Location>> GetDropOffLocations()
+        {
+            return await _service.GetAllDropOff();
+        }
+
         // GET: api/Location/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Location>> GetLocation(long id)

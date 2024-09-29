@@ -19,4 +19,14 @@ public class LocationService
     {
         return await _context.Locations.AsNoTracking().ToListAsync();
     }
+
+    public async Task<IEnumerable<Location>> GetAllDropOff()
+    {
+        return await _context.Locations.AsNoTracking().Where(l => l.DropOffAvailable == true).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Location>> GetAllPickUp()
+    {
+        return await _context.Locations.AsNoTracking().Where(l => l.PickUpAvailable == true).ToListAsync();
+    }
 }
