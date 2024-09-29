@@ -30,12 +30,14 @@ namespace CareRentalApi.Controllers
         }
 
         //Get: api/Location/PickUp
+        [HttpGet("PickUpLocations")]
         public async Task<IEnumerable<Location>> GetPickUpLocations()
         {
             return await _service.GetAllPickUp();
         }
 
         //Get: api/Location/DropOff
+        [HttpGet("DropOffLocations")]
         public async Task<IEnumerable<Location>> GetDropOffLocations()
         {
             return await _service.GetAllDropOff();
