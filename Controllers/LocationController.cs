@@ -92,14 +92,13 @@ namespace CareRentalApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLocation(long id)
         {
-            var location = await _context.Locations.FindAsync(id);
+            var location = await _service.GetById(id);
             if (location == null)
             {
                 return NotFound();
             }
 
-            _context.Locations.Remove(location);
-            await _context.SaveChangesAsync();
+            await _service.Delete(location);
 
             return NoContent();
         }

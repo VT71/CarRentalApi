@@ -66,6 +66,12 @@ public class LocationService
         return location;
     }
 
+    public async Task Delete(Location location)
+    {
+        _context.Locations.Remove(location);
+        await _context.SaveChangesAsync();
+    }
+
     private bool LocationExists(long id)
     {
         return _context.Locations.Any(e => e.Id == id);
