@@ -83,10 +83,9 @@ namespace CareRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Location>> PostLocation(Location location)
         {
-            _context.Locations.Add(location);
-            await _context.SaveChangesAsync();
+            Location newLocation = await _service.Create(location);
 
-            return CreatedAtAction(nameof(GetLocation), new { id = location.Id }, location);
+            return CreatedAtAction(nameof(GetLocation), new { id = newLocation.Id }, newLocation);
         }
 
         // DELETE: api/Location/5

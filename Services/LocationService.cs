@@ -58,6 +58,14 @@ public class LocationService
         return true;
     }
 
+    public async Task<Location> Create(Location location)
+    {
+        await _context.Locations.AddAsync(location);
+        await _context.SaveChangesAsync();
+
+        return location;
+    }
+
     private bool LocationExists(long id)
     {
         return _context.Locations.Any(e => e.Id == id);
