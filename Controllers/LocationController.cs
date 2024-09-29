@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
+using CarRentalApi.Services;
 
 namespace CareRentalApi.Controllers
 {
@@ -15,17 +16,19 @@ namespace CareRentalApi.Controllers
     public class LocationController : ControllerBase
     {
         private readonly CarRentalContext _context;
+        private readonly LocationService _service;
 
-        public LocationController(CarRentalContext context)
+        public LocationController(CarRentalContext context, LocationService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: api/Location
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Location>>> GetLocations()
+        public async Task<IEnumerable<Location>> GetLocations()
         {
-            return await _context.Locations.ToListAsync();
+            return await _service.GetAll();
         }
 
         // GET: api/Location/5
