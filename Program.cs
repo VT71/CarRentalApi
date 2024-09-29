@@ -51,6 +51,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<LocationService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
