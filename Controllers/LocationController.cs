@@ -15,12 +15,10 @@ namespace CareRentalApi.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private readonly CarRentalContext _context;
         private readonly LocationService _service;
 
-        public LocationController(CarRentalContext context, LocationService service)
+        public LocationController(LocationService service)
         {
-            _context = context;
             _service = service;
         }
 
