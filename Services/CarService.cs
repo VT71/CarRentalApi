@@ -62,6 +62,12 @@ public class CarService
         return car;
     }
 
+    public async Task Delete(Car car)
+    {
+        _context.Cars.Remove(car);
+        await _context.SaveChangesAsync();
+    }
+
     private bool CarExists(long id)
     {
         return _context.Cars.Any(e => e.Id == id);

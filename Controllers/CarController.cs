@@ -96,14 +96,13 @@ namespace CarRentalApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCar(long id)
         {
-            var car = await _context.Cars.FindAsync(id);
+            var car = await _service.GetById(id);
             if (car == null)
             {
                 return NotFound();
             }
 
-            _context.Cars.Remove(car);
-            await _context.SaveChangesAsync();
+            await _service.Delete(car);
 
             return NoContent();
         }
