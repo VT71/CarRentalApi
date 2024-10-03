@@ -23,6 +23,37 @@ public class CarService
         return car;
     }
 
+    public async Task<IEnumerable<Car>> GetAvailableCars(long pickUpLocationId, long dropOffLocationId, string pickUpDateTimeIso, string dropOffDateTimeIso)
+    {
+        DateTimeOffset pickUpDateTime;
+        DateTimeOffset dropOffDateTime;
+        var nowTime = DateTimeOffset.UtcNow;
+
+        bool validPickUpDateTime = DateTimeOffset.TryParse(pickUpDateTimeIso, out pickUpDateTime) && DateTimeOffset.Compare(pickUpDateTime, nowTime) > 0;
+        bool validDropOffDateTime = DateTimeOffset.TryParse(dropOffDateTimeIso, out dropOffDateTime) && DateTimeOffset.Compare(dropOffDateTime, pickUpDateTime) > 0;
+
+        var pickUpLocation = await _context.Locations.AsNoTracking().SingleOrDefaultAsync(l => l.Id == pickUpLocationId);
+        var dropOffLocation = await _context.Locations.AsNoTracking().SingleOrDefaultAsync(l => l.Id == dropOffLocationId);
+
+        if (pickUpLocation != null && pickUpLocation.PickUpAvailable
+        && dropOffLocation != null && dropOffLocation.DropOffAvailable
+        && validPickUpDateTime && validDropOffDateTime)
+        {
+            List<long> overlappingBookingCarIds = await _context.Bookings.Where(b => DateTimeOffset.Compare(pickUpDateTime, b.DropOffDateTime) < 0 && DateTimeOffset.Compare(dropOffDateTime, b.PickUpDateTime) > 0).Select(b => b.Id).ToListAsync();
+
+            if (overlappingBookingCarIds.Count > 0)
+            {
+                return await _context.Cars.Where(c => !overlappingBookingCarIds.Contains(c.Id)).ToListAsync();
+            }
+            else
+            {
+                return await _context.Cars.AsNoTracking().ToListAsync();
+            }
+        }
+
+        return [];
+    }
+
     public async Task<bool> Update(long id, Car car)
     {
         _context.Entry(car).State = EntityState.Modified;

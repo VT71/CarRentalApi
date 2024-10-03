@@ -40,6 +40,13 @@ namespace CarRentalApi.Controllers
             return await _service.GetAll();
         }
 
+        // Get: api/Car/1/2/2011-10-05T14:48:00.000Z/2011-10-05T14:48:00.000Z
+        [HttpGet("{pickUpLocationId}/{dropOffLocationId}/{pickUpDateTimeIso}/{dropOffDateTimeIso}")]
+        public async Task<IEnumerable<Car>> GetAvailableCars(long pickUpLocationId, long dropOffLocationId, string pickUpDateTimeIso, string dropOffDateTimeIso)
+        {
+            return await _service.GetAvailableCars(pickUpLocationId, dropOffLocationId, pickUpDateTimeIso, dropOffDateTimeIso);
+        }
+
         // GET: api/Car/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Car>> GetCar(long id)
@@ -83,7 +90,7 @@ namespace CarRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Car>> PostCar(Car car)
         {
-            var updatedCar = _service.Create(car);
+            var updatedCar = await _service.Create(car);
             if (updatedCar == null)
             {
                 return BadRequest();
