@@ -46,6 +46,22 @@ public class CarService
         return true;
     }
 
+    public async Task<Car?> Create(Car car)
+    {
+        var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == car.MakeId);
+
+        if (make == null)
+        {
+            return null;
+        }
+
+        make.Cars.Add(car);
+
+        await _context.SaveChangesAsync();
+
+        return car;
+    }
+
     private bool CarExists(long id)
     {
         return _context.Cars.Any(e => e.Id == id);

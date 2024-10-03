@@ -83,18 +83,13 @@ namespace CarRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Car>> PostCar(Car car)
         {
-            var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == car.MakeId);
-
-            if (make == null)
+            var updatedCar = _service.Create(car);
+            if (updatedCar == null)
             {
                 return BadRequest();
             }
 
-            make.Cars.Add(car);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetCar), new { id = car.Id }, car);
+            return CreatedAtAction(nameof(GetCar), new { id = updatedCar.Id }, updatedCar);
         }
 
         // DELETE: api/Car/5
