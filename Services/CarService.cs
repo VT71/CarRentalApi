@@ -13,12 +13,12 @@ public class CarService
 
     public async Task<IEnumerable<Car>> GetAll()
     {
-        return await _context.Cars.AsNoTracking().Include(car => car.Make).ToListAsync();
+        return FilterAvailableCars(await _context.Cars.AsNoTracking().Include(car => car.Make).ToListAsync());
     }
 
     public async Task<Car?> GetById(long id)
     {
-        var car = await _context.Cars.AsNoTracking().Include(car => car.Make).SingleOrDefaultAsync(c => c.Id == id);
+        var car = await _context.Cars.AsNoTracking().Include(car => car.Make).SingleOrDefaultAsync(c => c.Id == id && c.Available == true);
 
         return car;
     }
@@ -43,11 +43,11 @@ public class CarService
 
             if (overlappingBookingCarIds.Count > 0)
             {
-                return await _context.Cars.Where(c => !overlappingBookingCarIds.Contains(c.Id)).ToListAsync();
+                return FilterAvailableCars(await _context.Cars.Where(c => !overlappingBookingCarIds.Contains(c.Id)).ToListAsync());
             }
             else
             {
-                return await _context.Cars.AsNoTracking().ToListAsync();
+                return FilterAvailableCars(await _context.Cars.AsNoTracking().ToListAsync());
             }
         }
 
@@ -102,5 +102,10 @@ public class CarService
     private bool CarExists(long id)
     {
         return _context.Cars.Any(e => e.Id == id);
+    }
+
+    private IEnumerable<Car> FilterAvailableCars(List<Car> cars)
+    {
+        return cars.Where(c => c.Available).ToList();
     }
 }
