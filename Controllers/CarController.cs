@@ -18,15 +18,17 @@ namespace CarRentalApi.Controllers
     public class CarController : ControllerBase
     {
         private readonly CarRentalContext _context;
+        private readonly CarService _service;
 
-        public CarController(CarRentalContext context)
+        public CarController(CarRentalContext context, CarService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: api/Car
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Car>>> GetCars()
+        public async Task<IEnumerable<Car>> GetCars()
         {
             // var audience = User.Claims;
             // foreach (var i in audience)
@@ -35,7 +37,7 @@ namespace CarRentalApi.Controllers
             // }
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             // Console.WriteLine("User ID: " + userId);
-            return await _context.Cars.AsNoTracking().Include(car => car.Make).ToListAsync();
+            return await _service.GetAll();
         }
 
         // GET: api/Car/5
