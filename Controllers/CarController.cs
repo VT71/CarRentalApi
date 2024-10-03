@@ -44,7 +44,7 @@ namespace CarRentalApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Car>> GetCar(long id)
         {
-            var car = await _context.Cars.AsNoTracking().Include(car => car.Make).SingleOrDefaultAsync(c => c.Id == id);
+            var car = await _service.GetById(id);
 
             if (car == null)
             {

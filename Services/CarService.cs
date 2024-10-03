@@ -15,4 +15,11 @@ public class CarService
     {
         return await _context.Cars.AsNoTracking().Include(car => car.Make).ToListAsync();
     }
+
+    public async Task<Car?> GetById(long id)
+    {
+        var car = await _context.Cars.AsNoTracking().Include(car => car.Make).SingleOrDefaultAsync(c => c.Id == id);
+
+        return car;
+    }
 }
