@@ -66,23 +66,14 @@ namespace CarRentalApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(car).State = EntityState.Modified;
+            bool carModified = await _service.Update(id, car);
 
-            try
+            if (!carModified)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CarExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+
 
             return NoContent();
         }
@@ -120,11 +111,6 @@ namespace CarRentalApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool CarExists(long id)
-        {
-            return _context.Cars.Any(e => e.Id == id);
         }
     }
 }

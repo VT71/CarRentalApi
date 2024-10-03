@@ -22,4 +22,32 @@ public class CarService
 
         return car;
     }
+
+    public async Task<bool> Update(long id, Car car)
+    {
+        _context.Entry(car).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CarExists(id))
+            {
+                return false;
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return true;
+    }
+
+    private bool CarExists(long id)
+    {
+        return _context.Cars.Any(e => e.Id == id);
+    }
 }
