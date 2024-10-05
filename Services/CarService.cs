@@ -43,7 +43,7 @@ public class CarService
 
             if (overlappingBookingCarIds.Count > 0)
             {
-                return FilterAvailableCars(await _context.Cars.Where(c => !overlappingBookingCarIds.Contains(c.Id)).ToListAsync());
+                return FilterAvailableCars(await _context.Cars.Where(c => !overlappingBookingCarIds.Contains(c.Id)).Include(c => c.Make).ToListAsync());
             }
             else
             {
