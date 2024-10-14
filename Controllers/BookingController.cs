@@ -94,5 +94,11 @@ namespace CareRentalApi.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("countries")]
+        public string[] GetAllCountries()
+        {
+            return this._service.GetAllCountries();
+        }
     }
 }
