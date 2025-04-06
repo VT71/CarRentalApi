@@ -90,6 +90,13 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Create scope and seed
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<CarRentalContext>();
+    SeedData.Initialize(context);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

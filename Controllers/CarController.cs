@@ -64,7 +64,7 @@ namespace CarRentalApi.Controllers
         // PUT: api/Car/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCar(long id, Car car)
+        public async Task<ActionResult> Put(long id, [FromBody] Car car)
         {
             var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == car.MakeId);
 
