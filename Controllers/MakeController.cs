@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
+using CarRentalApi.Models.Dtos.Make;
+using CarRentalApi.Extensions;
 
 namespace CarRentalApi.Controllers
 {
@@ -23,14 +20,18 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Make
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Make>>> GetMake()
+        public async Task<ActionResult<IEnumerable<MakeDto>>> GetMake()
         {
-            return await _context.Makes.AsNoTracking().ToListAsync();
+
+            return await _context.Makes.AsNoTracking()
+                .Include(m => m.Cars)
+                .Select(m => m.ToDto())
+                .ToListAsync();
         }
 
         // GET: api/Make/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Make>> GetMake(long id)
+        public async Task<ActionResult<MakeDto>> GetMake(long id)
         {
             var make = await _context.Makes.AsNoTracking().Include(m => m.Cars).SingleOrDefaultAsync(m => m.Id == id);
 
@@ -39,12 +40,12 @@ namespace CarRentalApi.Controllers
                 return NotFound();
             }
 
-            return make;
+            return make.ToDto();
         }
 
         // PUT: api/Make/5
         [HttpPut("{id}/updateName")]
-        public async Task<ActionResult> UpdateName(long id, string name)
+        public async Task<ActionResult> UpdateMake(long id, string name)
         {
             var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == id);
 
