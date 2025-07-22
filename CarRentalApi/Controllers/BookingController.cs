@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CarRentalApi.Data;
 using CarRentalApi.Models;
-using CarRentalApi.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+using CarRentalApi.Services.Interfaces;
 
 namespace CareRentalApi.Controllers
 {
@@ -16,18 +8,19 @@ namespace CareRentalApi.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly BookingService _service;
+        private readonly IBookingService _service;
 
-        public BookingController(CarRentalContext context, BookingService service)
+        public BookingController(IBookingService service)
         {
             _service = service;
         }
 
         // GET: api/Booking
         [HttpGet]
-        public async Task<IEnumerable<Booking>> GetBookings()
+        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
-            return await _service.GetAll();
+            var bookings = await _service.GetAll();
+            return Ok(bookings);
         }
 
         // GET: api/Booking/5

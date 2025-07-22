@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CarRentalApi.Services;
+using CarRentalApi.Services.Interfaces;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
@@ -50,7 +51,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
-builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<LocationService>();
 builder.Services.AddScoped<CarService>();
 
