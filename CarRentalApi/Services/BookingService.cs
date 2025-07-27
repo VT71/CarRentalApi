@@ -16,7 +16,7 @@ public class BookingService: IBookingService
 
     public async Task<IEnumerable<Booking>> GetAll()
     {
-        return await _context.Bookings.AsNoTracking().ToListAsync(); ;
+        return await _context.Bookings.AsNoTracking().ToListAsync();
     }
 
     public async Task<Booking?> Create(Booking newBooking)
@@ -112,7 +112,7 @@ public class BookingService: IBookingService
             return null;
         }
 
-        booking.Status = Status.Pending;
+        booking.Status = BookingStatus.Pending;
 
         return booking;
     }
@@ -124,7 +124,7 @@ public class BookingService: IBookingService
 
     private bool ValidStatus(object? value)
     {
-        if (value != null && Enum.IsDefined(typeof(Status), value))
+        if (value != null && Enum.IsDefined(typeof(BookingStatus), value))
         {
             return true;
         }

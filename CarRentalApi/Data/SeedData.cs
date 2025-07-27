@@ -106,7 +106,7 @@ public static class SeedData
             PickUpLocation = location1,
             DropOffLocationId = location1.Id,
             DropOffLocation = location1,
-            Status = Status.Confirmed
+            Status = BookingStatus.Confirmed
         };
 
         context.Bookings.Add(booking1);
