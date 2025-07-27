@@ -29,7 +29,7 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Car
         [HttpGet]
-        public async Task<IEnumerable<Car>> GetCars()
+        public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
             // var audience = User.Claims;
             // foreach (var i in audience)
@@ -38,7 +38,7 @@ namespace CarRentalApi.Controllers
             // }
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             // Console.WriteLine("User ID: " + userId);
-            return await _service.GetAll();
+            return Ok(await _service.GetAll());
         }
 
         // Get: api/Car/1/2/2011-10-05T14:48:00.000Z/2011-10-05T14:48:00.000Z

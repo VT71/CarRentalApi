@@ -2,7 +2,6 @@ using CareRentalApi.Controllers;
 using CarRentalApi.Models;
 using CarRentalApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using NSubstitute;
 
 namespace CarRentalApi.Tests.Controllers;
