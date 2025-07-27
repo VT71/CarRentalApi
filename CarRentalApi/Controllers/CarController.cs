@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 using CarRentalApi.Data;
 using CarRentalApi.Models;
+using CareRentalApi.Services.Interfaces;
 
 namespace CarRentalApi.Controllers
 {
@@ -18,9 +19,9 @@ namespace CarRentalApi.Controllers
     public class CarController : ControllerBase
     {
         private readonly CarRentalContext _context;
-        private readonly CarService _service;
+        private readonly ICarService _service;
 
-        public CarController(CarRentalContext context, CarService service)
+        public CarController(CarRentalContext context, ICarService service)
         {
             _context = context;
             _service = service;

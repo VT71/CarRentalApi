@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CarRentalApi.Services;
 using CarRentalApi.Services.Interfaces;
+using CareRentalApi.Services.Interfaces;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
@@ -53,7 +54,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<LocationService>();
-builder.Services.AddScoped<CarService>();
+builder.Services.AddScoped<ICarService, CarService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

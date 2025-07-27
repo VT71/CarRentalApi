@@ -1,8 +1,9 @@
+using CareRentalApi.Services.Interfaces;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-public class CarService
+public class CarService: ICarService
 {
     private readonly CarRentalContext _context;
 
