@@ -1,0 +1,55 @@
+using CarRentalApi.Data;
+using CarRentalApi.Extensions;
+using CarRentalApi.Models;
+using CarRentalApi.Models.Dtos.Make;
+using Microsoft.EntityFrameworkCore;
+
+namespace CareRentalApi.Services;
+
+public class MakeService
+{
+    private readonly CarRentalContext _context;
+
+    public MakeService(CarRentalContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<MakeDto>> GetAll()
+    {
+        return await _context.Makes.AsNoTracking()
+                .Include(m => m.Cars)
+                .Select(m => m.ToDto())
+                .ToListAsync();
+    }
+
+    public async Task<Make?> GetById(long id)
+    {
+        return await _context.Makes.FindAsync(id);
+    }
+
+    public async Task<Make?> Create(Make make)
+    {
+        _context.Makes.Add(make);
+        await _context.SaveChangesAsync();
+        return make;
+    }
+
+    public async Task<bool> Update(long id, Make make)
+    {
+        if (id != make.Id)
+        {
+            return false;
+        }
+
+        _context.Entry(make).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task Delete(Make make)
+    {
+        _context.Makes.Remove(make);
+        await _context.SaveChangesAsync();
+    }
+}

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using CarRentalApi.Services;
+using CareRentalApi.Services.Interfaces;
 
 namespace CareRentalApi.Controllers
 {
@@ -15,32 +16,34 @@ namespace CareRentalApi.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private readonly LocationService _service;
+        private readonly ILocationService _service;
 
-        public LocationController(LocationService service)
+        public LocationController(ILocationService service)
         {
             _service = service;
         }
 
         // GET: api/Location
         [HttpGet]
-        public async Task<IEnumerable<Location>> GetLocations()
+        public async Task<ActionResult<IEnumerable<Location>>> GetLocations()
         {
-            return await _service.GetAll();
+            return Ok(await _service.GetAll());
         }
 
         //Get: api/Location/PickUp
         [HttpGet("PickUpLocations")]
-        public async Task<IEnumerable<Location>> GetPickUpLocations()
+        public async Task<ActionResult<IEnumerable<Location>>> GetPickUpLocations()
         {
-            return await _service.GetAllPickUp();
+            var locations = await _service.GetAllPickUp();
+            return Ok(locations);
         }
 
         //Get: api/Location/DropOff
         [HttpGet("DropOffLocations")]
-        public async Task<IEnumerable<Location>> GetDropOffLocations()
+        public async Task<ActionResult<IEnumerable<Location>>> GetDropOffLocations()
         {
-            return await _service.GetAllDropOff();
+            var locations = await _service.GetAllDropOff();
+            return Ok(locations);
         }
 
         // GET: api/Location/5
@@ -54,7 +57,7 @@ namespace CareRentalApi.Controllers
                 return NotFound();
             }
 
-            return location;
+            return Ok(location);
         }
 
         // PUT: api/Location/5
@@ -69,7 +72,7 @@ namespace CareRentalApi.Controllers
 
             bool locationUpdated = await _service.Update(id, location);
 
-            if (locationUpdated)
+            if (!locationUpdated)
             {
                 return NotFound();
             }

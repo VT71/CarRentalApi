@@ -1,10 +1,11 @@
+using CareRentalApi.Services.Interfaces;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalApi.Services;
 
-public class LocationService
+public class LocationService: ILocationService
 {
 
     private readonly CarRentalContext _context;
