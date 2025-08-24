@@ -1,17 +1,8 @@
-using CareRentalApi.Services.Interfaces;
 using NSubstitute;
-using Xunit;
 using CarRentalApi.Controllers;
 using CarRentalApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CareRentalApi.Controllers;
 using CarRentalApi.Services.Interfaces;
-using CarRentalApi.Extensions;
-using CarRentalApi.Models.Dtos.Make;
-using Microsoft.VisualBasic;
-using System.Runtime.InteropServices;
 using NSubstitute.ExceptionExtensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +36,7 @@ public class MakeControllerTests
         // Arrange
         for (int i = 1; i <= makeCount; i++)
         {
-            _serviceMock.GetAll().Returns(new List<MakeDto> { GetMake(i).ToDto() });
+            _serviceMock.GetAll().Returns(new List<Make> { GetMake(i) });
         }
 
         // Act
@@ -53,7 +44,7 @@ public class MakeControllerTests
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returnedMakes = Assert.IsAssignableFrom<IEnumerable<MakeDto>>(okResult.Value);
+        var returnedMakes = Assert.IsAssignableFrom<IEnumerable<Make>>(okResult.Value);
         Assert.Equal(makeCount, returnedMakes.Count());
     }
 
@@ -72,7 +63,7 @@ public class MakeControllerTests
         if (id != 404)
         {
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnedMake = Assert.IsType<MakeDto>(okResult.Value);
+            var returnedMake = Assert.IsType<Make>(okResult.Value);
         }
         else
         {

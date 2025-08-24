@@ -1,7 +1,5 @@
 using CarRentalApi.Data;
-using CarRentalApi.Extensions;
 using CarRentalApi.Models;
-using CarRentalApi.Models.Dtos.Make;
 using CarRentalApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,11 +14,10 @@ public class MakeService: IMakeService
         _context = context;
     }
 
-    public async Task<IEnumerable<MakeDto>> GetAll()
+    public async Task<IEnumerable<Make>> GetAll()
     {
         return await _context.Makes.AsNoTracking()
                 .Include(m => m.Cars)
-                .Select(m => m.ToDto())
                 .ToListAsync();
     }
 

@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarRentalApi.Data;
 using CarRentalApi.Models;
-using CarRentalApi.Models.Dtos.Make;
-using CarRentalApi.Extensions;
 using CarRentalApi.Services.Interfaces;
-using System.Threading.Tasks;
 
 namespace CarRentalApi.Controllers
 {
@@ -22,7 +18,7 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Make
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MakeDto>>> GetMakes()
+        public async Task<ActionResult<IEnumerable<Make>>> GetMakes()
         {
 
             return Ok(await _service.GetAll());
@@ -30,7 +26,7 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Make/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MakeDto>> GetMake(long id)
+        public async Task<ActionResult<Make>> GetMake(long id)
         {
             var make = await _service.GetById(id);
 
@@ -39,7 +35,7 @@ namespace CarRentalApi.Controllers
                 return NotFound();
             }
 
-            return Ok(make.ToDto());
+            return Ok(make);
         }
 
         // POST: api/Make
