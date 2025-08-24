@@ -4,6 +4,8 @@ using CarRentalApi.Data;
 using CarRentalApi.Models;
 using CarRentalApi.Models.Dtos.Make;
 using CarRentalApi.Extensions;
+using CarRentalApi.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace CarRentalApi.Controllers
 {
@@ -11,61 +13,33 @@ namespace CarRentalApi.Controllers
     [ApiController]
     public class MakeController : ControllerBase
     {
-        private readonly CarRentalContext _context;
+        private readonly IMakeService _service;
 
-        public MakeController(CarRentalContext context)
+        public MakeController(IMakeService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/Make
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MakeDto>>> GetMake()
+        public async Task<ActionResult<IEnumerable<MakeDto>>> GetMakes()
         {
 
-            return await _context.Makes.AsNoTracking()
-                .Include(m => m.Cars)
-                .Select(m => m.ToDto())
-                .ToListAsync();
+            return Ok(await _service.GetAll());
         }
 
         // GET: api/Make/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MakeDto>> GetMake(long id)
         {
-            var make = await _context.Makes.AsNoTracking().Include(m => m.Cars).SingleOrDefaultAsync(m => m.Id == id);
+            var make = await _service.GetById(id);
 
             if (make == null)
             {
                 return NotFound();
             }
 
-            return make.ToDto();
-        }
-
-        // PUT: api/Make/5
-        [HttpPut("{id}/updateName")]
-        public async Task<ActionResult> UpdateMake(long id, string name)
-        {
-            var make = await _context.Makes.SingleOrDefaultAsync(m => m.Id == id);
-
-            if (make == null)
-            {
-                return BadRequest();
-            }
-
-            make.Name = name;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return Conflict();
-            }
-
-            return NoContent();
+            return Ok(make.ToDto());
         }
 
         // POST: api/Make
@@ -73,34 +47,27 @@ namespace CarRentalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Make>> PostMake(Make make)
         {
-            _context.Makes.Add(make);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetMake), new { id = make.Id }, make);
+            var createdMake = await _service.Create(make);
+            return CreatedAtAction(nameof(GetMake), new { id = createdMake.Id }, createdMake);
         }
-
-
-        // Temporarily Unavailable Actions
 
         // PUT: api/Make/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMake(long id, Make make)
         {
-            if (id != make.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(make).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var makeUpdated = await _service.Update(id, make);
+
+                if (makeUpdated == false)
+                {
+                    return BadRequest();
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MakeExists(id))
+                if (!await MakeExists(id))
                 {
                     return NotFound();
                 }
@@ -117,21 +84,15 @@ namespace CarRentalApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMake(long id)
         {
-            var make = await _context.Makes.FindAsync(id);
-            if (make == null)
-            {
-                return NotFound();
-            }
-
-            _context.Makes.Remove(make);
-            await _context.SaveChangesAsync();
+            var makeDeleted = await _service.Delete(id);
+            if (!makeDeleted) { return NotFound(); }
 
             return NoContent();
         }
 
-        private bool MakeExists(long id)
+        private async Task<bool> MakeExists(long id)
         {
-            return _context.Makes.Any(e => e.Id == id);
+            return await _service.GetById(id) != null;
         }
     }
 }

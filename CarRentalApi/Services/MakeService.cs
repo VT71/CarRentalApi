@@ -2,12 +2,13 @@ using CarRentalApi.Data;
 using CarRentalApi.Extensions;
 using CarRentalApi.Models;
 using CarRentalApi.Models.Dtos.Make;
+using CarRentalApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CareRentalApi.Services;
-
-public class MakeService
-{
+namespace CarRentalApi.Services;
+    
+public class MakeService: IMakeService
+    {
     private readonly CarRentalContext _context;
 
     public MakeService(CarRentalContext context)
@@ -28,7 +29,7 @@ public class MakeService
         return await _context.Makes.FindAsync(id);
     }
 
-    public async Task<Make?> Create(Make make)
+    public async Task<Make> Create(Make make)
     {
         _context.Makes.Add(make);
         await _context.SaveChangesAsync();
@@ -47,9 +48,17 @@ public class MakeService
         return true;
     }
 
-    public async Task Delete(Make make)
+    public async Task<bool> Delete(long id)
     {
+        var make = await _context.Makes.FindAsync(id);
+
+        if (make == null)
+        {
+            return false;
+        }
+
         _context.Makes.Remove(make);
         await _context.SaveChangesAsync();
+        return true;
     }
 }
