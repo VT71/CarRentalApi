@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CarRentalApi.Data;
 
-public class CarRentalContext : DbContext
+public class CarRentalContext : IdentityDbContext<IdentityUser>
 {
     public CarRentalContext(DbContextOptions<CarRentalContext> options) : base(options)
     {
@@ -38,6 +40,8 @@ public class CarRentalContext : DbContext
             .HasForeignKey(b => b.DropOffLocationId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
+
+        base.OnModelCreating(modelBuilder);
     }
 
     public DbSet<Car> Cars { get; set; }

@@ -6,12 +6,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CarRentalApi.Services;
 using CarRentalApi.Services.Interfaces;
 using CareRentalApi.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<CarRentalContext>();
 
 builder.Services.AddCors(options =>
 {
@@ -24,12 +28,16 @@ builder.Services.AddCors(options =>
 
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
-{
-    options.Authority = domain;
-    options.Audience = builder.Configuration["Auth0:Audience"];
-});
+// Auth0
+
+// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+// .AddJwtBearer(options =>
+// {
+//     options.Authority = domain;
+//     options.Audience = builder.Configuration["Auth0:Audience"];
+// });
+
+// External DB Connection
 
 // var connection = String.Empty;
 // if (builder.Environment.IsDevelopment())
@@ -88,9 +96,15 @@ builder.Services.AddSwaggerGen(c =>
           c.AddSecurityRequirement(securityRequirement);
       });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
 
 
 var app = builder.Build();
+
+app.MapIdentityApi<IdentityUser>();
 
 // Create scope and seed
 using (var scope = app.Services.CreateScope())
