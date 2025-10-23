@@ -26,9 +26,9 @@ builder.Services.AddCors(options =>
                       });
 });
 
-var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
-
 // Auth0
+
+// var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 
 // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // .AddJwtBearer(options =>
@@ -53,7 +53,11 @@ var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 //     options.UseSqlServer(connection));
 
 builder.Services.AddDbContext<CarRentalContext>(options =>
-   options.UseInMemoryDatabase("AppDb"));
+    // In-memory
+    options.UseInMemoryDatabase("AppDb"));
+
+    // Azure SQL Server
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
