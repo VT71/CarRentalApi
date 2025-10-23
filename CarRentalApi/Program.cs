@@ -74,37 +74,36 @@ builder.Services.AddSwaggerGen(c =>
       {
           c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProject", Version = "v1.0.0" });
 
-          string securityDefinitionName = "Bearer";
+        //   string securityDefinitionName = "Bearer";
 
-          var securitySchema = new OpenApiSecurityScheme
-          {
-              Description = "Using the Authorization header with the Bearer scheme.",
-              Name = "Authorization",
-              In = ParameterLocation.Header,
-              Type = SecuritySchemeType.Http,
-              Scheme = "bearer",
-              Reference = new OpenApiReference
-              {
-                  Type = ReferenceType.SecurityScheme,
-                  Id = "Bearer"
-              }
-          };
+        //   var securitySchema = new OpenApiSecurityScheme
+        //   {
+        //       Description = "Using the Authorization header with the Bearer scheme.",
+        //       Name = "Authorization",
+        //       In = ParameterLocation.Header,
+        //       Type = SecuritySchemeType.Http,
+        //       Scheme = "bearer",
+        //       Reference = new OpenApiReference
+        //       {
+        //           Type = ReferenceType.SecurityScheme,
+        //           Id = "Bearer"
+        //       }
+        //   };
 
-          OpenApiSecurityRequirement securityRequirement = new OpenApiSecurityRequirement
-          {
-              { securitySchema, new[] { "Bearer" } }
-          };
+        //   OpenApiSecurityRequirement securityRequirement = new OpenApiSecurityRequirement
+        //   {
+        //       { securitySchema, new[] { "Bearer" } }
+        //   };
 
-          c.AddSecurityDefinition(securityDefinitionName, securitySchema);
+        //   c.AddSecurityDefinition(securityDefinitionName, securitySchema);
 
-          c.AddSecurityRequirement(securityRequirement);
+        //   c.AddSecurityRequirement(securityRequirement);
       });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
-
 
 var app = builder.Build();
 
