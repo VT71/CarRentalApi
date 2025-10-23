@@ -1,4 +1,4 @@
-using CareRentalApi.Services.Interfaces;
+using CarRentalApi.Services.Interfaces;
 using NSubstitute;
 using Xunit;
 using CarRentalApi.Controllers;

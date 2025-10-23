@@ -1,4 +1,4 @@
-using CareRentalApi.Services.Interfaces;
+using CarRentalApi.Services.Interfaces;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using Microsoft.EntityFrameworkCore;

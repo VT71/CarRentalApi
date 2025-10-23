@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 using CarRentalApi.Data;
 using CarRentalApi.Models;
-using CareRentalApi.Services.Interfaces;
+using CarRentalApi.Services.Interfaces;
 
 namespace CarRentalApi.Controllers
 {

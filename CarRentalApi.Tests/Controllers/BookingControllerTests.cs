@@ -1,4 +1,4 @@
-using CareRentalApi.Controllers;
+using CarRentalApi.Controllers;
 using CarRentalApi.Models;
 using CarRentalApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;

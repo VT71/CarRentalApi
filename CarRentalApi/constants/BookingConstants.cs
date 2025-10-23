@@ -1,4 +1,4 @@
-namespace CareRentalApi.Constants
+namespace CarRentalApi.Constants
 {
     public static class BookingConstants
     {

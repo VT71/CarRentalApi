@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using CarRentalApi.Models;
 using CarRentalApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
-namespace CareRentalApi.Controllers
+namespace CarRentalApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

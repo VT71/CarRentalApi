@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CarRentalApi.Services;
 using CarRentalApi.Services.Interfaces;
-using CareRentalApi.Services.Interfaces;
+using CarRentalApi.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";

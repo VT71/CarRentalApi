@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using CarRentalApi.Services;
-using CareRentalApi.Services.Interfaces;
+using CarRentalApi.Services.Interfaces;
 
-namespace CareRentalApi.Controllers
+namespace CarRentalApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

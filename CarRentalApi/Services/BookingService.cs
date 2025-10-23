@@ -1,4 +1,4 @@
-using CareRentalApi.Constants;
+using CarRentalApi.Constants;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using CarRentalApi.Services.Interfaces;

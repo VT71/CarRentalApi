@@ -1,4 +1,4 @@
-using CareRentalApi.Services.Interfaces;
+using CarRentalApi.Services.Interfaces;
 using NSubstitute;
 using Xunit;
 using CarRentalApi.Controllers;
@@ -6,7 +6,7 @@ using CarRentalApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CareRentalApi.Controllers;
+using CarRentalApi.Controllers;
 
 namespace CarRentalApi.Tests.Controllers;
 

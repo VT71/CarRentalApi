@@ -1,6 +1,6 @@
 using CarRentalApi.Models;
 
-namespace CareRentalApi.Services.Interfaces
+namespace CarRentalApi.Services.Interfaces
 {
     public interface ILocationService
     {
