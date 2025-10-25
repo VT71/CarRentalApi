@@ -7,6 +7,7 @@ using CarRentalApi.Services;
 using CarRentalApi.Services.Interfaces;
 using CarRentalApi.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
@@ -16,6 +17,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<CarRentalContext>();
+
+builder.Services.AddAuthorization(
+    options =>
+    {
+        options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
+    });
 
 builder.Services.AddCors(options =>
 {
