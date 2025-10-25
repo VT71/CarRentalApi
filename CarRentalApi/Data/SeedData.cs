@@ -1,5 +1,6 @@
 using CarRentalApi.Data;
 using CarRentalApi.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 public static class SeedData
@@ -111,7 +112,34 @@ public static class SeedData
 
         context.Bookings.Add(booking1);
 
+        // Seed Identity Roles and Users
+        context.Roles.Add(new IdentityRole { Name = "Admin" });
+        context.Roles.Add(new IdentityRole { Name = "Employee" });
+        context.Roles.Add(new IdentityRole { Name = "Customer" });
+
+        // Seed Users
+        var passwordHasher = new PasswordHasher<IdentityUser>();
+
+        var adminUser = new IdentityUser("admin");
+        adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin@123");
+        context.Users.Add(adminUser);
+
+        var employeeUser = new IdentityUser("employee");
+        employeeUser.PasswordHash = passwordHasher.HashPassword(employeeUser, "Employee@123");
+        context.Users.Add(employeeUser);
+
+        var customerUser = new IdentityUser("customer");
+        customerUser.PasswordHash = passwordHasher.HashPassword(customerUser, "Customer@123");
+        context.Users.Add(customerUser);
+
         // TEST RESTRICTED DELETE BEHAVIOR. NOT WORKING IN-MEMORY DB
+
+        context.SaveChanges();
+
+                // Seed User Roles
+        context.UserRoles.Add(new IdentityUserRole<string> { UserId = adminUser.Id, RoleId = context.Roles.First(r => r.Name == "Admin").Id });
+        context.UserRoles.Add(new IdentityUserRole<string> { UserId = employeeUser.Id, RoleId = context.Roles.First(r => r.Name == "Employee").Id });
+        context.UserRoles.Add(new IdentityUserRole<string> { UserId = customerUser.Id, RoleId = context.Roles.First(r => r.Name == "Customer").Id });
 
         context.SaveChanges();
     }
