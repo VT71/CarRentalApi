@@ -8,10 +8,43 @@ public static class SeedData
     public static void Initialize(CarRentalContext context)
     {
         // Check if the database is already seeded
-        if (context.Makes.Any() || context.Cars.Any() || context.Locations.Any() || context.Bookings.Any())
+        if (context.Users.Any())
         {
             return; // Database has already been seeded
         }
+        
+        // Seed Users
+        var passwordHasher = new PasswordHasher<IdentityUser>();
+
+        var adminUser = new IdentityUser("admin");
+        adminUser.Email = "admin@example.com";
+        adminUser.LockoutEnabled = true;
+        adminUser.NormalizedEmail = "ADMIN@EXAMPLE.COM";
+        adminUser.NormalizedUserName = "ADMIN@EXAMPLE.COM";
+        adminUser.UserName = "admin@example.com";
+        adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin@123");
+        context.Users.Add(adminUser);
+
+        var employeeUser = new IdentityUser("employee");
+        employeeUser.Email = "employee@example.com";
+        employeeUser.NormalizedEmail = "EMPLOYEE@EXAMPLE.COM";
+        employeeUser.NormalizedUserName = "EMPLOYEE@EXAMPLE.COM";
+        employeeUser.UserName = "employee@example.com";
+        employeeUser.PasswordHash = passwordHasher.HashPassword(employeeUser, "Employee@123");
+        context.Users.Add(employeeUser);
+
+        var customerUser = new IdentityUser("customer");
+        customerUser.Email = "customer@example.com";
+        customerUser.NormalizedEmail = "CUSTOMER@EXAMPLE.COM";
+        customerUser.NormalizedUserName = "CUSTOMER@EXAMPLE.COM";
+        customerUser.UserName = "customer@example.com";
+        customerUser.PasswordHash = passwordHasher.HashPassword(customerUser, "Customer@123");
+        context.Users.Add(customerUser);
+
+        // TEST RESTRICTED DELETE BEHAVIOR. NOT WORKING IN-MEMORY DB
+
+        context.SaveChanges();
+
         // Seed data
         var make1 = new Make { Name = "Jeep" };
         var make2 = new Make { Name = "Toyota" };
@@ -98,7 +131,7 @@ public static class SeedData
 
         var booking1 = new Booking
         {
-            UserId = "1",
+            UserId = customerUser.Id,
             CarId = car1.Id,
             Car = car1,
             PickUpDateTime = DateTimeOffset.Parse("2024-10-22T12:53:56.968+00:00"),
@@ -117,26 +150,7 @@ public static class SeedData
         context.Roles.Add(new IdentityRole { Name = "Employee" });
         context.Roles.Add(new IdentityRole { Name = "Customer" });
 
-        // Seed Users
-        var passwordHasher = new PasswordHasher<IdentityUser>();
-
-        var adminUser = new IdentityUser("admin");
-        adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin@123");
-        context.Users.Add(adminUser);
-
-        var employeeUser = new IdentityUser("employee");
-        employeeUser.PasswordHash = passwordHasher.HashPassword(employeeUser, "Employee@123");
-        context.Users.Add(employeeUser);
-
-        var customerUser = new IdentityUser("customer");
-        customerUser.PasswordHash = passwordHasher.HashPassword(customerUser, "Customer@123");
-        context.Users.Add(customerUser);
-
-        // TEST RESTRICTED DELETE BEHAVIOR. NOT WORKING IN-MEMORY DB
-
-        context.SaveChanges();
-
-                // Seed User Roles
+        // Seed User Roles
         context.UserRoles.Add(new IdentityUserRole<string> { UserId = adminUser.Id, RoleId = context.Roles.First(r => r.Name == "Admin").Id });
         context.UserRoles.Add(new IdentityUserRole<string> { UserId = employeeUser.Id, RoleId = context.Roles.First(r => r.Name == "Employee").Id });
         context.UserRoles.Add(new IdentityUserRole<string> { UserId = customerUser.Id, RoleId = context.Roles.First(r => r.Name == "Customer").Id });
