@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentalApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookingController : ControllerBase

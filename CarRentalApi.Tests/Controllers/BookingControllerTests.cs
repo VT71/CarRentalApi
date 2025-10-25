@@ -45,6 +45,19 @@ public class BookingControllerTests
     }
 
     [Fact]
+    public void Controller_RequiresAuthorizationAttribute()
+    {
+        // Arrange
+        var controllerType = typeof(BookingController);
+
+        // Act
+        var authorizeAttribute = controllerType.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true);
+
+        // Assert
+        Assert.NotEmpty(authorizeAttribute);
+    }
+
+    [Fact]
     public async Task GetBookings_WhenNoBookingsExist_ReturnsEmptyList()
     {
         // Arrange
