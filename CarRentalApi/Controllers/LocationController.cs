@@ -9,9 +9,11 @@ using CarRentalApi.Data;
 using CarRentalApi.Models;
 using CarRentalApi.Services;
 using CarRentalApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentalApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LocationController : ControllerBase

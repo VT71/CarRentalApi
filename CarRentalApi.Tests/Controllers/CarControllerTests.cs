@@ -34,6 +34,19 @@ public class CarControllerTests
     }
 
     [Fact]
+    public void Controller_RequiresAuthorizationAttribute()
+    {
+        // Arrange
+        var controllerType = typeof(CarController);
+
+        // Act
+        var authorizeAttribute = controllerType.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true);
+
+        // Assert
+        Assert.NotEmpty(authorizeAttribute);
+    }
+
+    [Fact]
     public async Task GetCars_WhenCarsExist_ReturnsCars()
     {
         // Arrange

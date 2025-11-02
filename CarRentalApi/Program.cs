@@ -5,9 +5,9 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CarRentalApi.Services;
 using CarRentalApi.Services.Interfaces;
-using CarRentalApi.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
@@ -17,14 +17,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<CarRentalContext>();
-
-builder.Services.AddAuthorization(
-    options =>
-    {
-        options.FallbackPolicy = new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .Build();
-    });
 
 builder.Services.AddCors(options =>
 {
@@ -68,7 +60,13 @@ builder.Services.AddDbContext<CarRentalContext>(options =>
     // Azure SQL Server
     //options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers(config =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+                     .RequireAuthenticatedUser()
+                     .Build();
+    config.Filters.Add(new AuthorizeFilter(policy));
+}).AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
@@ -121,8 +119,9 @@ app.MapIdentityApi<IdentityUser>();
 // Create scope and seed
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<CarRentalContext>();
-    SeedData.Initialize(context);
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<CarRentalContext>();
+    await SeedData.Initialize(services, context);
 }
 
 // Configure the HTTP request pipeline.

@@ -14,6 +14,7 @@ using CarRentalApi.Services.Interfaces;
 
 namespace CarRentalApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CarController : ControllerBase

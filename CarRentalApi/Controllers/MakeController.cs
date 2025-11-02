@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarRentalApi.Models;
 using CarRentalApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentalApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MakeController : ControllerBase

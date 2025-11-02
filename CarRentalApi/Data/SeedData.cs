@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using Microsoft.AspNetCore.Identity;
@@ -5,43 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 public static class SeedData
 {
-    public static void Initialize(CarRentalContext context)
+    public static async Task Initialize(IServiceProvider services, CarRentalContext context)
     {
         // Check if the database is already seeded
         if (context.Users.Any())
         {
             return; // Database has already been seeded
         }
-        
+
         // Seed Users
-        var passwordHasher = new PasswordHasher<IdentityUser>();
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
-        var adminUser = new IdentityUser("admin");
-        adminUser.Email = "admin@example.com";
-        adminUser.LockoutEnabled = true;
-        adminUser.NormalizedEmail = "ADMIN@EXAMPLE.COM";
-        adminUser.NormalizedUserName = "ADMIN@EXAMPLE.COM";
-        adminUser.UserName = "admin@example.com";
-        adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin@123");
-        context.Users.Add(adminUser);
+        var adminUser = await CreateUserAsync(userManager, "admin@example.com", "Admin@123");
+        var employeeUser = await CreateUserAsync(userManager, "employee@example.com", "Employee@123");
+        var customerUser = await CreateUserAsync(userManager, "customer@example.com", "Customer@123");
 
-        var employeeUser = new IdentityUser("employee");
-        employeeUser.Email = "employee@example.com";
-        employeeUser.NormalizedEmail = "EMPLOYEE@EXAMPLE.COM";
-        employeeUser.NormalizedUserName = "EMPLOYEE@EXAMPLE.COM";
-        employeeUser.UserName = "employee@example.com";
-        employeeUser.PasswordHash = passwordHasher.HashPassword(employeeUser, "Employee@123");
-        context.Users.Add(employeeUser);
-
-        var customerUser = new IdentityUser("customer");
-        customerUser.Email = "customer@example.com";
-        customerUser.NormalizedEmail = "CUSTOMER@EXAMPLE.COM";
-        customerUser.NormalizedUserName = "CUSTOMER@EXAMPLE.COM";
-        customerUser.UserName = "customer@example.com";
-        customerUser.PasswordHash = passwordHasher.HashPassword(customerUser, "Customer@123");
-        context.Users.Add(customerUser);
-
-        // TEST RESTRICTED DELETE BEHAVIOR. NOT WORKING IN-MEMORY DB
+        // Seed Identity Roles and Users
+        context.Roles.Add(new IdentityRole { Name = "Admin" });
+        context.Roles.Add(new IdentityRole { Name = "Employee" });
+        context.Roles.Add(new IdentityRole { Name = "Customer" });
 
         context.SaveChanges();
 
@@ -145,16 +128,27 @@ public static class SeedData
 
         context.Bookings.Add(booking1);
 
-        // Seed Identity Roles and Users
-        context.Roles.Add(new IdentityRole { Name = "Admin" });
-        context.Roles.Add(new IdentityRole { Name = "Employee" });
-        context.Roles.Add(new IdentityRole { Name = "Customer" });
-
         // Seed User Roles
         context.UserRoles.Add(new IdentityUserRole<string> { UserId = adminUser.Id, RoleId = context.Roles.First(r => r.Name == "Admin").Id });
         context.UserRoles.Add(new IdentityUserRole<string> { UserId = employeeUser.Id, RoleId = context.Roles.First(r => r.Name == "Employee").Id });
         context.UserRoles.Add(new IdentityUserRole<string> { UserId = customerUser.Id, RoleId = context.Roles.First(r => r.Name == "Customer").Id });
 
         context.SaveChanges();
+
+        var users = context.Users.ToList();
+
+        // TEST RESTRICTED DELETE BEHAVIOR. NOT WORKING IN-MEMORY DB
+    }
+
+    private static async Task<IdentityUser> CreateUserAsync(UserManager<IdentityUser> userManager, string username, string password)
+    {
+        var user = new IdentityUser
+        {
+            UserName = username,
+            Email = username,
+        };
+        await userManager.CreateAsync(user, password);
+
+        return user;
     }
 }

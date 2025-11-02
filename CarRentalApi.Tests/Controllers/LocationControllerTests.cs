@@ -32,6 +32,19 @@ public class LocationControllerTests
         };
     }
 
+    [Fact]
+    public void Controller_RequiresAuthorizationAttribute()
+    {
+        // Arrange
+        var controllerType = typeof(LocationController);
+
+        // Act
+        var authorizeAttribute = controllerType.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true);
+
+        // Assert
+        Assert.NotEmpty(authorizeAttribute);
+    }
+
     [Theory]
     [InlineData(1)]
     [InlineData(0)]

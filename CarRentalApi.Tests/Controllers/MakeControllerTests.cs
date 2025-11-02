@@ -28,6 +28,19 @@ public class MakeControllerTests
         };
     }
 
+    [Fact]
+    public void Controller_RequiresAuthorizationAttribute()
+    {
+        // Arrange
+        var controllerType = typeof(MakeController);
+
+        // Act
+        var authorizeAttribute = controllerType.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true);
+
+        // Assert
+        Assert.NotEmpty(authorizeAttribute);
+    }
+
     [Theory]
     [InlineData(1)]
     [InlineData(0)]
