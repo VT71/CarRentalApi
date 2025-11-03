@@ -19,6 +19,7 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Booking
         [HttpGet]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
             var bookings = await _service.GetAll();

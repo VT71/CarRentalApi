@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<CarRentalContext>();
 
 builder.Services.AddCors(options =>

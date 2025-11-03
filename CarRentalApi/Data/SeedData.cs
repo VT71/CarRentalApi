@@ -16,15 +16,20 @@ public static class SeedData
 
         // Seed Users
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
         var adminUser = await CreateUserAsync(userManager, "admin@example.com", "Admin@123");
         var employeeUser = await CreateUserAsync(userManager, "employee@example.com", "Employee@123");
         var customerUser = await CreateUserAsync(userManager, "customer@example.com", "Customer@123");
 
         // Seed Identity Roles and Users
-        context.Roles.Add(new IdentityRole { Name = "Admin" });
-        context.Roles.Add(new IdentityRole { Name = "Employee" });
-        context.Roles.Add(new IdentityRole { Name = "Customer" });
+        await roleManager.CreateAsync(new IdentityRole { Name = "Admin" });
+        await roleManager.CreateAsync(new IdentityRole { Name = "Employee" });
+        await roleManager.CreateAsync(new IdentityRole { Name = "Customer" });
+
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+        await userManager.AddToRoleAsync(employeeUser, "Employee");
+        await userManager.AddToRoleAsync(customerUser, "Customer");
 
         context.SaveChanges();
 
@@ -127,11 +132,6 @@ public static class SeedData
         };
 
         context.Bookings.Add(booking1);
-
-        // Seed User Roles
-        context.UserRoles.Add(new IdentityUserRole<string> { UserId = adminUser.Id, RoleId = context.Roles.First(r => r.Name == "Admin").Id });
-        context.UserRoles.Add(new IdentityUserRole<string> { UserId = employeeUser.Id, RoleId = context.Roles.First(r => r.Name == "Employee").Id });
-        context.UserRoles.Add(new IdentityUserRole<string> { UserId = customerUser.Id, RoleId = context.Roles.First(r => r.Name == "Customer").Id });
 
         context.SaveChanges();
 
