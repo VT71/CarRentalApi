@@ -131,7 +131,37 @@ public static class SeedData
             Status = BookingStatus.Confirmed
         };
 
+        var booking2 = new Booking
+        {
+            UserId = customerUser.Id,
+            CarId = car2.Id,
+            Car = car2,
+            PickUpDateTime = DateTimeOffset.Parse("2024-11-01T12:53:56.968+00:00"),
+            DropOffDateTime = DateTimeOffset.Parse("2024-11-11T12:53:56.968+00:00"),
+            PickUpLocationId = location1.Id,
+            PickUpLocation = location1,
+            DropOffLocationId = location1.Id,
+            DropOffLocation = location1,
+            Status = BookingStatus.Confirmed
+        };
+
+        var booking3 = new Booking
+        {
+            UserId = customerUser.Id,
+            CarId = car3.Id,
+            Car = car3,
+            PickUpDateTime = DateTimeOffset.Parse("2024-11-13T12:53:56.968+00:00"),
+            DropOffDateTime = DateTimeOffset.Parse("2024-11-24T12:53:56.968+00:00"),
+            PickUpLocationId = location1.Id,
+            PickUpLocation = location1,
+            DropOffLocationId = location1.Id,
+            DropOffLocation = location1,
+            Status = BookingStatus.Confirmed
+        };
+
         context.Bookings.Add(booking1);
+        context.Bookings.Add(booking2);
+        context.Bookings.Add(booking3);
 
         context.SaveChanges();
 
