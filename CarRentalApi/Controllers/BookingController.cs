@@ -20,7 +20,7 @@ namespace CarRentalApi.Controllers
         // GET: api/Booking
         [HttpGet()]
         [Authorize(Roles = "Admin,Employee")]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings([FromQuery] PaginatedQuery query)
+        public async Task<ActionResult<PaginatedList<Booking>>> GetBookings([FromQuery] PaginatedQuery query)
         {
             var bookings = await _service.GetAll(query);
             return Ok(bookings);
