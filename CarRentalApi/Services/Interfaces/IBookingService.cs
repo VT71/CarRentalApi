@@ -4,7 +4,7 @@ namespace CarRentalApi.Services.Interfaces;
 
 public interface IBookingService
 {
-    Task<IEnumerable<Booking>> GetAll();
+    Task<PaginatedList<Booking>> GetAll(PaginatedQuery query);
     Task<Booking?> Create(Booking newBooking);
     Task<Booking?> GetById(long id);
     Task<bool> Update(long id, Booking booking);

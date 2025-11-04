@@ -61,17 +61,17 @@ public class BookingControllerTests
     public async Task GetBookings_WhenNoBookingsExist_ReturnsEmptyList()
     {
         // Arrange
-        _serviceMock.GetAll().Returns(new List<Booking>());
+        _serviceMock.GetAll(Arg.Any<PaginatedQuery>()).Returns(new PaginatedList<Booking>(new List<Booking>(), 0, 1, 10));
 
         // Act
         var controller = new BookingController(_serviceMock);
-        var result = await controller.GetBookings();
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var bookings = Assert.IsAssignableFrom<IEnumerable<Booking>>(okResult.Value);
+        var result = await controller.GetBookings(new PaginatedQuery());
 
         // Assert
-        Assert.NotNull(bookings);
-        Assert.Empty(bookings);
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var paginatedList = Assert.IsAssignableFrom<PaginatedList<Booking>>(okResult.Value);
+        Assert.NotNull(paginatedList);
+        Assert.Empty(paginatedList.Items);
     }
 
     [Fact]
@@ -79,18 +79,18 @@ public class BookingControllerTests
     {
         // Arrange
         var booking = GetBooking(1);
-        var existingBookingList = new List<Booking> { booking };
-        _serviceMock.GetAll().Returns(existingBookingList);
+        var paginatedList = new PaginatedList<Booking>(new List<Booking> { booking }, 1, 1, 1);
+        _serviceMock.GetAll(Arg.Any<PaginatedQuery>()).Returns(paginatedList);
 
         // Act
         var controller = new BookingController(_serviceMock);
-        var result = await controller.GetBookings();
+        var result = await controller.GetBookings(new PaginatedQuery());
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var bookings = Assert.IsAssignableFrom<IEnumerable<Booking>>(okResult.Value);
+        var bookings = Assert.IsAssignableFrom<PaginatedList<Booking>>(okResult.Value);
 
         // Assert
         Assert.NotNull(bookings);
-        foreach (var b in bookings)
+        foreach (var b in bookings.Items)
         {
             Assert.Equal(booking.Id, b.Id);
         }

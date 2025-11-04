@@ -14,9 +14,17 @@ public class BookingService: IBookingService
         _context = context;
     }
 
-    public async Task<IEnumerable<Booking>> GetAll()
+    public async Task<PaginatedList<Booking>> GetAll(PaginatedQuery query)
     {
-        return await _context.Bookings.AsNoTracking().ToListAsync();
+        var allBookings = _context.Bookings.AsNoTracking();
+        var totalCount = await allBookings.CountAsync();
+
+        var bookings = await allBookings
+            .Skip((query.PageIndex - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .ToListAsync();
+
+        return new PaginatedList<Booking>(bookings, totalCount, query.PageIndex, query.PageSize);
     }
 
     public async Task<Booking?> Create(Booking newBooking)
