@@ -28,6 +28,18 @@ namespace CarRentalApi.Controllers
             var bookings = await _service.GetAll(query);
             return Ok(bookings);
         }
+
+        // GET: api/Booking/Customer/5
+        [HttpGet("customer/{customerId}")]
+        [Authorize(Roles = "Admin,Employee,Customer")]
+        [ProducesResponseType(typeof(PaginatedList<Booking>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<PaginatedList<Booking>>> GetBookingsByCustomer(string customerId, [FromQuery] PaginatedQuery query)
+        {
+            var bookings = await _service.GetByCustomerId(customerId, query);
+            return Ok(bookings);
+        }
         
         // GET: api/Booking/5
         [HttpGet("{id}")]
