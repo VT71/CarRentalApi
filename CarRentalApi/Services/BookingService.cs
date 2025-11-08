@@ -14,7 +14,7 @@ public class BookingService: IBookingService
         _context = context;
     }
 
-    public async Task<PaginatedList<Booking>> GetAll(PaginatedQuery query)
+    public async Task<PaginatedList<Booking>> GetAllAsync(PaginatedQuery query)
     {
         var allBookings = _context.Bookings.AsNoTracking();
         var totalCount = await allBookings.CountAsync();

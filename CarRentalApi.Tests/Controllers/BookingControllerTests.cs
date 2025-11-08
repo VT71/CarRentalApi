@@ -61,7 +61,7 @@ public class BookingControllerTests
     public async Task GetBookings_WhenNoBookingsExist_ReturnsEmptyList()
     {
         // Arrange
-        _serviceMock.GetAll(Arg.Any<PaginatedQuery>()).Returns(new PaginatedList<Booking>(new List<Booking>(), 0, 1, 10));
+        _serviceMock.GetAllAsync(Arg.Any<PaginatedQuery>()).Returns(new PaginatedList<Booking>(new List<Booking>(), 0, 1, 10));
 
         // Act
         var controller = new BookingController(_serviceMock);
@@ -80,7 +80,7 @@ public class BookingControllerTests
         // Arrange
         var booking = GetBooking(1);
         var paginatedList = new PaginatedList<Booking>(new List<Booking> { booking }, 1, 1, 1);
-        _serviceMock.GetAll(Arg.Any<PaginatedQuery>()).Returns(paginatedList);
+        _serviceMock.GetAllAsync(Arg.Any<PaginatedQuery>()).Returns(paginatedList);
 
         // Act
         var controller = new BookingController(_serviceMock);

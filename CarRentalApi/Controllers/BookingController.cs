@@ -25,7 +25,7 @@ namespace CarRentalApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PaginatedList<Booking>>> GetBookings([FromQuery] PaginatedQuery query)
         {
-            var bookings = await _service.GetAll(query);
+            var bookings = await _service.GetAllAsync(query);
             return Ok(bookings);
         }
 
