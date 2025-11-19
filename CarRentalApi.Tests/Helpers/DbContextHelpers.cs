@@ -40,17 +40,17 @@ public static class DbContextHelpers
             var employeeUser = new IdentityUser
             {
                 UserName = "employee@example.com",
-                Email = "Employee@123",
+                Email = "employee@example.com",
             };
-            employeeUser.PasswordHash = passwordHasher.HashPassword(employeeUser, "Admin@123");
+            employeeUser.PasswordHash = passwordHasher.HashPassword(employeeUser, "Employee@123");
             context.Add(employeeUser);
 
             var customerUser = new IdentityUser
             {
                 UserName = "customer@example.com",
-                Email = "Customer@123",
+                Email = "customer@example.com",
             };
-            customerUser.PasswordHash = passwordHasher.HashPassword(customerUser, "Admin@123");
+            customerUser.PasswordHash = passwordHasher.HashPassword(customerUser, "Customer@123");
             context.Add(customerUser);
 
 

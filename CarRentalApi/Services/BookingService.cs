@@ -27,7 +27,7 @@ public class BookingService: IBookingService
         return new PaginatedList<Booking>(bookings, totalCount, query.PageIndex, query.PageSize);
     }
 
-    public async Task<PaginatedList<Booking>> GetByCustomerId(string customerId, PaginatedQuery query)
+    public async Task<PaginatedList<Booking>> GetByCustomerIdAsync(string customerId, PaginatedQuery query)
     {
         var customerBookings = _context
             .Bookings.Where(b => b.UserId == customerId)

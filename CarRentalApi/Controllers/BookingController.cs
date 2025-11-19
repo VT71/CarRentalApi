@@ -37,10 +37,10 @@ namespace CarRentalApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PaginatedList<Booking>>> GetBookingsByCustomer(string customerId, [FromQuery] PaginatedQuery query)
         {
-            var bookings = await _service.GetByCustomerId(customerId, query);
+            var bookings = await _service.GetByCustomerIdAsync(customerId, query);
             return Ok(bookings);
         }
-        
+
         // GET: api/Booking/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetBooking(long id)
