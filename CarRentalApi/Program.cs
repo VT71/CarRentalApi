@@ -8,6 +8,7 @@ using CarRentalApi.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using CarRentalApi.Authorisation.Handlers;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
@@ -18,6 +19,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<CarRentalContext>();
+
+builder.Services.AddSingleton<IAuthorizationHandler, BookingOperationAuthReqHandler>();
 
 builder.Services.AddCors(options =>
 {

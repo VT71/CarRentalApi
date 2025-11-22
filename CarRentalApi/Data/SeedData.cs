@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using CarRentalApi.Authorisation;
 using CarRentalApi.Data;
 using CarRentalApi.Models;
 using Microsoft.AspNetCore.Identity;
@@ -23,14 +24,13 @@ public static class SeedData
         var customerUser = await CreateUserAsync(userManager, "customer@example.com", "Customer@123");
 
         // Seed Identity Roles and Users
-        await roleManager.CreateAsync(new IdentityRole { Name = "Admin" });
-        await roleManager.CreateAsync(new IdentityRole { Name = "Employee" });
-        await roleManager.CreateAsync(new IdentityRole { Name = "Customer" });
+        await roleManager.CreateAsync(new IdentityRole { Name = Roles.Admin });
+        await roleManager.CreateAsync(new IdentityRole { Name = Roles.Employee });
+        await roleManager.CreateAsync(new IdentityRole { Name = Roles.Customer });
 
-        await userManager.AddToRoleAsync(adminUser, "Admin");
-        await userManager.AddToRoleAsync(employeeUser, "Employee");
-        await userManager.AddToRoleAsync(customerUser, "Customer");
-
+        await userManager.AddToRoleAsync(adminUser, Roles.Admin);
+        await userManager.AddToRoleAsync(employeeUser, Roles.Employee);
+        await userManager.AddToRoleAsync(customerUser, Roles.Customer);
         context.SaveChanges();
 
         // Seed data

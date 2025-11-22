@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using CarRentalApi.Models;
 using CarRentalApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using CarRentalApi.Authorisation;
+using CarRentalApi.Authorisation.Requirements;
 
 namespace CarRentalApi.Controllers
 {
@@ -11,15 +13,19 @@ namespace CarRentalApi.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _service;
+        private readonly IAuthorizationService _authorizationService;
 
-        public BookingController(IBookingService service)
+        public BookingController(
+            IBookingService service,
+            IAuthorizationService authorizationService)
         {
             _service = service;
+            _authorizationService = authorizationService;
         }
 
         // GET: api/Booking
         [HttpGet()]
-        [Authorize(Roles = "Admin,Employee")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Employee}")]
         [ProducesResponseType(typeof(PaginatedList<Booking>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -31,14 +37,22 @@ namespace CarRentalApi.Controllers
 
         // GET: api/Booking/Customer/5
         [HttpGet("customer/{customerId}")]
-        [Authorize(Roles = "Admin,Employee,Customer")]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Employee},{Roles.Customer}")]
         [ProducesResponseType(typeof(PaginatedList<Booking>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<PaginatedList<Booking>>> GetBookingsByCustomer(string customerId, [FromQuery] PaginatedQuery query)
         {
             var bookings = await _service.GetByCustomerIdAsync(customerId, query);
-            return Ok(bookings);
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, bookings, Operations.Read);
+
+            if (authorizationResult.Succeeded)
+            {
+                return Ok(bookings);
+            }
+
+            return Forbid();
         }
 
         // GET: api/Booking/5
