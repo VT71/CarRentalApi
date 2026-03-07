@@ -1,4 +1,6 @@
 using CarRentalApi.Data;
+using CarRentalApi.Interfaces;
+using CarRentalApi.Mappers;
 using CarRentalApi.Models;
 using CarRentalApi.Services;
 using CarRentalApi.Tests.Helpers;
@@ -8,11 +10,13 @@ namespace CarRentalApi.Tests.Services;
 
 public class BookingServiceTests
 {
-    private CarRentalContext context;
+    private readonly CarRentalContext context;
+    private readonly IBookingMapper mapper;
 
     public BookingServiceTests()
     {
         context = DbContextHelpers.GetInMemoryDbContext();
+        mapper = new BookingMapper();
     }
 
     [Theory]
@@ -35,7 +39,7 @@ public class BookingServiceTests
         var expectedBookings = allBookings.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 
         // Act
-        var service = new BookingService(context);
+        var service = new BookingService(context, mapper);
         var result = await service.GetAllAsync(query);
 
         // Assert
@@ -75,7 +79,7 @@ public class BookingServiceTests
         var expectedBookings = allBookings.Skip((1 - 1) * 10).Take(10).ToList();
 
         // Act
-        var service = new BookingService(context);
+        var service = new BookingService(context, mapper);
         var result = await service.GetAllAsync(query);
 
         // Assert

@@ -13,6 +13,7 @@ public class CarRentalContext : IdentityDbContext<IdentityUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Booking relationships
         modelBuilder.Entity<Booking>()
             .HasOne(b => b.Car)
             .WithMany(c => c.Bookings)
@@ -40,6 +41,17 @@ public class CarRentalContext : IdentityDbContext<IdentityUser>
             .HasForeignKey(b => b.DropOffLocationId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
+
+        // Timestamps configuration
+        modelBuilder.Entity<Booking>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("GETUTCDATE()")
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Booking>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("GETUTCDATE()")
+            .ValueGeneratedOnAddOrUpdate();
 
         base.OnModelCreating(modelBuilder);
     }

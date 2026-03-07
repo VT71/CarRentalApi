@@ -9,6 +9,6 @@ public interface IBookingService
     Task<Booking?> Create(Booking newBooking);
     Task<Booking?> GetById(long id);
     Task<bool> Update(long id, Booking booking);
-    Task Delete(Booking booking);
+    Task<long?> Patch(BookingPatchDto bookingPatch);
     string[] GetAllCountries();
 }

@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using CarRentalApi.Authorisation.Requirements;
 using CarRentalApi.Models;
-using CarRentalApi.Authorisation;
 using System.Security.Claims;
 
 namespace CarRentalApi.Authorisation.Handlers;
+
 public class BookingOperationAuthReqHandler : AuthorizationHandler<OperationAuthorisationRequirement, PaginatedList<Booking>>
 {
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, 
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
                                                    OperationAuthorisationRequirement requirement,
                                                    PaginatedList<Booking> resource)
     {
@@ -26,6 +26,7 @@ public class BookingOperationAuthReqHandler : AuthorizationHandler<OperationAuth
                 }
             }
         }
+        // Add Create, Update, Cancel operations requirements
         return Task.CompletedTask;
     }
 }

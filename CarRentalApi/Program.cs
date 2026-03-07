@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using CarRentalApi.Authorisation.Handlers;
+using CarRentalApi.Models;
+using CarRentalApi.Mappers;
+using CarRentalApi.Interfaces;
 
 var DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
@@ -75,9 +78,13 @@ builder.Services.AddControllers(config =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
+// Services
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<ICarService, CarService>();
+
+// Mappers
+builder.Services.AddSingleton<IBookingMapper, BookingMapper>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

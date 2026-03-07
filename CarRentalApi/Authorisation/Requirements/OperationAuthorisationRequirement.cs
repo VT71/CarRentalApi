@@ -17,5 +17,5 @@ public static class Operations
     public static OperationAuthorisationRequirement Create { get; } = new("Create");
     public static OperationAuthorisationRequirement Read { get; } = new("Read");
     public static OperationAuthorisationRequirement Update { get; } = new("Update");
-    public static OperationAuthorisationRequirement Delete { get; } = new("Delete");
+    public static OperationAuthorisationRequirement Cancel { get; } = new("Cancel");
 }

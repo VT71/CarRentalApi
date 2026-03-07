@@ -13,6 +13,8 @@ public class Booking
     public long DropOffLocationId { get; set; }
     public required Location DropOffLocation { get; set; }
     public required BookingStatus Status {get; set;}
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 }
 
 public enum BookingStatus

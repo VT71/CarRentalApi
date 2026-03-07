@@ -1,5 +1,6 @@
 using CarRentalApi.Constants;
 using CarRentalApi.Data;
+using CarRentalApi.Interfaces;
 using CarRentalApi.Models;
 using CarRentalApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +10,13 @@ namespace CarRentalApi.Services;
 public class BookingService: IBookingService
 {
     private readonly CarRentalContext _context;
-    public BookingService(CarRentalContext context)
+    private readonly IBookingMapper _mapper;
+    public BookingService(
+        CarRentalContext context,
+        IBookingMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<PaginatedList<Booking>> GetAllAsync(PaginatedQuery query)
@@ -84,10 +89,18 @@ public class BookingService: IBookingService
         return true;
     }
 
-    public async Task Delete(Booking booking)
+    public async Task<long?> Patch(BookingPatchDto bookingPatch)
     {
-        _context.Bookings.Remove(booking);
+        var booking = await _context.Bookings.FindAsync(bookingPatch.Id);
+        if (booking == null)
+        {
+            return null;
+        }
+
+        booking = _mapper.ToModel(booking, bookingPatch);
         await _context.SaveChangesAsync();
+
+        return booking.Id;
     }
 
     private Booking? ValidateBooking(Booking booking)

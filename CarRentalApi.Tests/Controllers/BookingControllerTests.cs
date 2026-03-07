@@ -90,11 +90,26 @@ public class BookingControllerTests
     }
 
     [Fact]
+    public async Task GetBooking_RequireAdminEmployeeCustomerRole()
+    {
+        // Arrange
+        var methodInfo = typeof(BookingController).GetMethod("GetBooking");
+        var authorizeAttribute = methodInfo?.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true)
+            .Cast<Microsoft.AspNetCore.Authorization.AuthorizeAttribute>()
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(authorizeAttribute);
+        Assert.Equal($"{Roles.Admin}, {Roles.Employee}, {Roles.Customer}", authorizeAttribute.Roles);
+    }
+
+    [Fact]
     public async Task GetBooking_WhenBookingExists_ReturnsBooking()
     {
         // Arrange
         var booking = BookingHelpers.GetBooking(1);
         _serviceMock.GetById(1).Returns(booking);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
@@ -112,6 +127,7 @@ public class BookingControllerTests
     {
         // Arrange
         _serviceMock.GetById(1).Returns((Booking?)null);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
@@ -119,6 +135,22 @@ public class BookingControllerTests
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task GetBoooking_WhenNotAuthorised_ReturnsForbid()
+    {
+        // Arrange
+        var booking = BookingHelpers.GetBooking(1);
+        _serviceMock.GetById(1).Returns(booking);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Failed()));
+
+        // Act
+        var controller = new BookingController(_serviceMock, _authorizationServiceMock);
+        var result = await controller.GetBooking(1);
+
+        // Assert
+        Assert.IsType<ForbidResult>(result.Result);
     }
 
     [Fact]
@@ -143,8 +175,8 @@ public class BookingControllerTests
         // Arrange
         var customerId = "1";
         var booking = BookingHelpers.GetBooking(1);
-        var paginatedList = bookingsExist 
-            ? new PaginatedList<Booking>(new List<Booking> { booking }, 1, 1, 1) 
+        var paginatedList = bookingsExist
+            ? new PaginatedList<Booking>(new List<Booking> { booking }, 1, 1, 1)
             : new PaginatedList<Booking>(new List<Booking>(), 0, 1, 1);
         _serviceMock.GetByCustomerIdAsync(customerId, Arg.Any<PaginatedQuery>()).Returns(paginatedList);
         _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
@@ -160,9 +192,10 @@ public class BookingControllerTests
         {
             Assert.Equal(booking.Id, bookingsResult.Items.First().Id);
             Assert.Equal(customerId, bookingsResult.Items.First().UserId);
-        } else
+        }
+        else
         {
-            Assert.Empty(bookingsResult.Items);   
+            Assert.Empty(bookingsResult.Items);
         }
     }
 
@@ -182,11 +215,26 @@ public class BookingControllerTests
     }
 
     [Fact]
+    public async Task PutBooking_RequiresAdminEmployeeRoles()
+    {
+        // Arrange
+        var methodInfo = typeof(BookingController).GetMethod("PutBooking");
+        var authorizeAttribute = methodInfo?.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true)
+            .Cast<Microsoft.AspNetCore.Authorization.AuthorizeAttribute>()
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(authorizeAttribute);
+        Assert.Equal($"{Roles.Admin}, {Roles.Employee}", authorizeAttribute.Roles);
+    }
+
+    [Fact]
     public async Task PutBooking_WhenBookingExists_UpdatesBooking()
     {
         // Arrange
         var booking = BookingHelpers.GetBooking(1);
         _serviceMock.Update(1, booking).Returns(true);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
@@ -202,6 +250,7 @@ public class BookingControllerTests
         // Arrange
         var booking = BookingHelpers.GetBooking(1);
         _serviceMock.Update(1, booking).Returns(false);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
@@ -212,11 +261,42 @@ public class BookingControllerTests
     }
 
     [Fact]
+    public async Task PutBooking_WhenNotAuthorised_ReturnsForbid()
+    {
+        // Arrange
+        var booking = BookingHelpers.GetBooking(1);
+        _serviceMock.Update(1, booking).Returns(true);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Failed()));
+
+        // Act
+        var controller = new BookingController(_serviceMock, _authorizationServiceMock);
+        var result = await controller.PutBooking(1, booking);
+
+        // Assert
+        Assert.IsType<ForbidResult>(result);
+    }
+
+    [Fact]
+    public async Task PostBooking_RequiresAdminEmployeeOrCustomerRoles()
+    {
+        // Arrange
+        var methodInfo = typeof(BookingController).GetMethod("PostBooking");
+        var authorizeAttribute = methodInfo?.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true)
+            .Cast<Microsoft.AspNetCore.Authorization.AuthorizeAttribute>()
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(authorizeAttribute);
+        Assert.Equal($"{Roles.Admin}, {Roles.Employee}, {Roles.Customer}", authorizeAttribute.Roles);
+    }
+
+    [Fact]
     public async Task PostBooking_WhenBookingIsValid_CreatesBooking()
     {
         // Arrange
         var booking = BookingHelpers.GetBooking(1);
         _serviceMock.Create(booking).Returns(booking);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
@@ -233,7 +313,9 @@ public class BookingControllerTests
     public async Task PostBooking_WhenBookingIsInvalid_ReturnsBadRequest()
     {
         // Arrange
-        Booking? booking = null;
+        Booking booking = BookingHelpers.GetBooking(1);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
+        _serviceMock.Create(Arg.Any<Booking>()).Returns((Booking?)null);
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
@@ -244,32 +326,108 @@ public class BookingControllerTests
     }
 
     [Fact]
-    public async Task DeleteBooking_WhenBookingExists_DeletesBooking()
+    public async Task PostBooking_WhenNotAuthorised_ReturnsForbid()
     {
         // Arrange
         var booking = BookingHelpers.GetBooking(1);
-        _serviceMock.GetById(1).Returns(booking);
-        _serviceMock.Delete(booking).Returns(Task.CompletedTask);
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Failed()));
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
-        var result = await controller.DeleteBooking(1);
+        var result = await controller.PostBooking(booking);
 
         // Assert
-        Assert.IsType<NoContentResult>(result);
+        Assert.IsType<ForbidResult>(result.Result);
     }
 
     [Fact]
-    public async Task DeleteBooking_WhenBookingDoesNotExist_ReturnsNotFound()
+    public async Task PatchBooking_RequiresAdminEmployeeRoles()
     {
         // Arrange
-        _serviceMock.GetById(1).Returns((Booking?)null);
+        var methodInfo = typeof(BookingController).GetMethod("PatchBooking");
+        var authorizeAttribute = methodInfo?.GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true)
+            .Cast<Microsoft.AspNetCore.Authorization.AuthorizeAttribute>()
+            .FirstOrDefault();
+
+        // Assert
+        Assert.NotNull(authorizeAttribute);
+        Assert.Equal($"{Roles.Admin}, {Roles.Employee}", authorizeAttribute.Roles);
+    }
+
+    [Fact]
+    public async Task PatchBooking_InvalidId_ReturnsBadRequest()
+    {
+        // Arrange
+        var bookingPatchDto = new BookingPatchDto
+        {
+            Id = 1,
+            Status = BookingStatus.Cancelled
+        };
 
         // Act
         var controller = new BookingController(_serviceMock, _authorizationServiceMock);
-        var result = await controller.DeleteBooking(1);
+        var result = await controller.PatchBooking(2, bookingPatchDto);
+
+        // Assert
+        Assert.IsType<BadRequestResult>(result);
+    }
+
+    [Fact]
+    public async Task PatchBooking_WhenAuthorizationFails_ReturnsForbid()
+    {
+        // Arrange
+        var bookingPatchDto = new BookingPatchDto
+        {
+            Id = 1,
+            Status = BookingStatus.Cancelled
+        };
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Failed()));
+
+        // Act
+        var controller = new BookingController(_serviceMock, _authorizationServiceMock);
+        var result = await controller.PatchBooking(1, bookingPatchDto);
+
+        // Assert
+        Assert.IsType<ForbidResult>(result);
+    }
+
+    [Fact]
+    public async Task PatchBooking_WhenBookingNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        var bookingPatchDto = new BookingPatchDto
+        {
+            Id = 1,
+            Status = BookingStatus.Cancelled
+        };
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
+        _serviceMock.Patch(Arg.Any<BookingPatchDto>()).Returns((long?)null);
+
+        // Act
+        var controller = new BookingController(_serviceMock, _authorizationServiceMock);
+        var result = await controller.PatchBooking(bookingPatchDto.Id, bookingPatchDto);
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task PatchBooking_WhenBookingFound_ReturnsNoContent()
+    {
+        // Arrange
+        var bookingPatchDto = new BookingPatchDto
+        {
+            Id = 1,
+            Status = BookingStatus.Cancelled
+        };
+        _authorizationServiceMock.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<PaginatedList<Booking>>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(Task.FromResult(AuthorizationResult.Success()));
+        _serviceMock.Patch(Arg.Any<BookingPatchDto>()).Returns(1L);
+
+        // Act
+        var controller = new BookingController(_serviceMock, _authorizationServiceMock);
+        var result = await controller.PatchBooking(bookingPatchDto.Id, bookingPatchDto);
+
+        // Assert
+        Assert.IsType<NoContentResult>(result);
     }
 }
