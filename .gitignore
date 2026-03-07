@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# Temp files
+CarRentalApi/TODO.txt
+
 # dotenv files
 .env
 
